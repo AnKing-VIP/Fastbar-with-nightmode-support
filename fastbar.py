@@ -9,6 +9,8 @@
 # Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/copyleft/agpl.html
 #
+# Updated by The AnKing (https://www.ankingmed.com/)and /u/ijgnord
+#
 # Third party softwares used with Fastbar.
 # QtAwesome. Copyright 2015 The Spyder development team.
 # Released under the MIT License.
