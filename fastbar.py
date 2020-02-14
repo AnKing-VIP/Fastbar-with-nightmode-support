@@ -25,7 +25,8 @@ from PyQt5 import QtWidgets, QtCore
 from aqt import mw
 from aqt.forms.browser import Ui_Dialog
 from aqt.browser import Browser
-from anki.sched import Scheduler
+from anki.sched import Scheduler as schedv1
+from anki.schedv2 import Scheduler as schedv2
 from anki.utils import ids2str, intTime
 from anki.hooks import addHook, wrap
 from anki.lang import _
@@ -191,7 +192,10 @@ class Fastbar:
         self.addToolBar(tb)
 
     def isBuried(self):
-        return not not (self.card and self.card.queue == -2)
+        if mw.col.schedVer() == 1:
+            return not not (self.card and self.card.queue == -2)
+        if mw.col.schedVer() == 2:
+            return not not (self.card and self.card.queue in [-2, -3])
 
     def onBury(self):
         self.editor.saveNow(self._onBury)
@@ -202,17 +206,24 @@ class Fastbar:
         if bur:
             self.col.sched.buryCards(c)
         else:
-            self.col.sched.unburyCards(c)
+            self.col.sched.unburiedCards(c)
         self.model.reset()
         self.mw.requireReset()
 
     def unburiedCards(self, ids):
         "Unburied cards."
         self.col.log(ids)
-        self.col.db.execute(
-            "update cards set queue=type,mod=?,usn=? "
-            "where queue = -2 and id in "+ ids2str(ids),
-            intTime(), self.col.usn())
+        if mw.col.schedVer() == 1:
+            self.col.db.execute(
+                "update cards set queue=type,mod=?,usn=? "
+                "where queue = -2 and id in "+ ids2str(ids),
+                intTime(), self.col.usn())
+        elif mw.col.schedVer() == 2:
+            self.col.db.execute(
+                "update cards set queue=type,mod=?,usn=? "
+                "where queue in (-2,-3) and id in "+ ids2str(ids),
+                intTime(), self.col.usn())
+            
 
     def setupUi(self, Dialog):
         self.actionToggle_Sidebar = QtWidgets.QAction(Dialog)
@@ -234,6 +245,7 @@ addHook("browser.setupMenus", Fastbar.addToolBar)
 Browser.isBuried = Fastbar.isBuried
 Browser.onBury = Fastbar.onBury
 Browser._onBury = Fastbar._onBury
-Scheduler.unburiedCards = Fastbar.unburiedCards
+schedv1.unburiedCards = Fastbar.unburiedCards
+schedv2.unburiedCards = Fastbar.unburiedCards
 
 Ui_Dialog.setupUi = wrap(Ui_Dialog.setupUi, Fastbar.setupUi)
