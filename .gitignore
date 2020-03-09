@@ -1,0 +1,18 @@
+# Linux FM
+.hidden
+.directory
+# Byte-compiled / optimized / DLL files
+*.pyo
+*.pyc
+__pycache__/
+# Python
+.python-version
+.mypy_cache/
+.ropeproject
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
