@@ -1,3 +1,4 @@
 {
-    "switch to dark theme when add-on night mode is enabled": true
+    "switch to dark theme when add-on night mode is enabled": true,
+    "enable compact mode": false
   }

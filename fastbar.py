@@ -110,6 +110,29 @@ class Fastbar:
             icon_delete = qta.icon('fa.trash-o')
             icon_resched = qta.icon('fa.sign-in')
             icon_repos = qta.icon('fa.history')
+        
+        if gc("enable compact mode"):
+            # TODO: Create custom QToolBar widget to handle word-wrapping
+            # properly
+            for action_name in (
+                "actionToggle_Fastbar", "actionToggle_Sidebar", "actionAdd",
+                "action_Info", "actionToggle_Mark", "actionToggle_Suspend",
+                "actionToggle_Bury", "actionChange_Deck", "actionChangeModel",
+                "actionAdd_Tags", "actionRemove_Tags", "actionClear_Unused_Tags",
+                "actionDelete", "actionReschedule", "actionReposition"
+            ):
+                action = getattr(self.form, action_name, None)
+                if action is None:
+                    continue
+                action_text = action.text()
+                if " " in action_text:
+                    word_wrapped_text = action_text.replace(" ", "\n", 1)
+                else:
+                    # hacky way to align single-line labels
+                    # "\n" contains an invisible space, since qt strips tailing whitespace
+                    word_wrapped_text = action_text + "\n‎"
+                action.setText(word_wrapped_text)
+
         self.form.actionToggle_Fastbar.setIcon(icon_fastbar)
         self.form.actionToggle_Sidebar.setIcon(icon_sidebar)
         self.form.actionAdd.setIcon(icon_add)
