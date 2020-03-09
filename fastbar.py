@@ -1,7 +1,7 @@
-# -*- coding: utf-8 -*-
+2# -*- coding: utf-8 -*-
 # pylint: skip-file
 #
-# Fastbar: an Anki 2.1 add-on adds a toolbar and toggle the sidebar
+# Fastbar with nightmode support: an Anki 2.1 add-on adds a toolbar and toggle the sidebar
 # in the Card Browser of Anki 2.1.
 # Version: 0.1.1
 # GitHub: https://github.com/luminousspice/anki-addons/
@@ -67,10 +67,12 @@ class Fastbar:
         tb = QToolBar("Fastbar")
         tb.setObjectName("Fastbar")
         if night_mode_on:
-             tb.setIconSize(QtCore.QSize(90, 20))
+             tb.setIconSize(QtCore.QSize(15, 15)) #90,20
         else:
             tb.setIconSize(QtCore.QSize(15, 15))
         tb.setToolButtonStyle(3)
+        tb.setStyleSheet('QToolBar{spacing:0px;}')
+
 
         self.form.actionToggle_Sidebar.triggered.connect(lambda: self.sidebarDockWidget.toggleViewAction().trigger())
         self.form.actionToggle_Bury.triggered.connect(self.onBury)
@@ -167,7 +169,7 @@ class Fastbar:
                 background: #272828!important;
                 margin-left: 0px;
                 margin-right: 0px;
-                width: 3px;
+                width: 1px;
             }
             QToolButton {
                 border: 0px solid #272828;
@@ -187,7 +189,8 @@ class Fastbar:
                 border: 0px solid #272828!important;
                 background-color: #272828!important;
                 background: #272828!important;
-                color: #272828!important;                
+                color: #272828!important;   
+                spacing:0px;             
             }
             """
             tb.setStyleSheet(st)
