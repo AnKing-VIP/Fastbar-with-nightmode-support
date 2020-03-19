@@ -1,3 +1,13 @@
 Updated by [The AnKing](https://www.ankingmed.com) with help from /u/ijgnord. 
 
-If you enjoy this add-on or want individualized help, please consider supporting us on **[Patreon](https://www.patreon.com/ankingmed)**, **[YouTube](https://www.youtube.com/theanking)** and **[Instagram](https://www.instagram.com/ankingmed)**/**[Facebook](https://www.facebook.com/ankingmed)** Thanks!
+<div style="color: #4297F9;"><b>If you enjoy this add-on or want individualized Anki help, please consider supporting us!</b></div>
+
+---
+
+<div style="vertical-align:middle;"><a href="https://www.ankingmed.com"><img src="../../addons21/46611790/AnKing/AnKingSmall.png"></a><a href="https://www.ankingmed.com"><img src="../../addons21/46611790/AnKing/TheAnKing.png"></a></div>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.facebook.com/ankingmed"><img src="../../addons21/46611790/AnKing/Facebook.jpg"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.instagram.com/ankingmed"><img src="../../addons21/46611790/AnKing/Instagram.jpg"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.youtube.com/theanking"><img src="../../addons21/46611790/AnKing/YouTube.jpg"></a>
+
+<a href="https://www.patreon.com/ankingmed"><img src="../../addons21/46611790/AnKing/Patreon.jpg"></a>
