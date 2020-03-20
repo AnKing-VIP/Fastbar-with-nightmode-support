@@ -1,4 +1,4 @@
-Updated by [The AnKing](https://www.ankingmed.com) with help from /u/ijgnord. 
+Updated by [The AnKing](https://www.ankingmed.com) with help from /u/ijgnord. Thanks to [Glutanimate](https://www.glutanimate.com) for the compact mode
 
 <div style="color: #4297F9;"><b>If you enjoy this add-on or want individualized Anki help, please consider supporting us!</b></div>
 
