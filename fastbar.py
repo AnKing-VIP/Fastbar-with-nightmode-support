@@ -31,7 +31,6 @@ from anki.sched import Scheduler as schedv1
 from anki.schedv2 import Scheduler as schedv2
 from anki.utils import ids2str, intTime
 from anki.hooks import addHook, wrap
-from anki.lang import _
 
 from . import qtawesome as qta
 
@@ -78,7 +77,7 @@ class Fastbar:
         self.form.actionToggle_Bury.triggered.connect(self.onBury)
         self.form.actionToggle_Fastbar.triggered.connect(lambda: tb.toggleViewAction().trigger())
 
-        self.form.actionDelete.setText(_("Delete Note"))
+        self.form.actionDelete.setText("Delete Note")
 
         if night_mode_on or theme_manager.night_mode:
             icon_fastbar = qta.icon('ei.remove-sign', color="white")
@@ -256,13 +255,13 @@ class Fastbar:
     def setupUi(self, Dialog):
         self.actionToggle_Sidebar = QtWidgets.QAction(Dialog)
         self.actionToggle_Sidebar.setObjectName("toggleSidebar")
-        self.actionToggle_Sidebar.setText(_("Toggle Sidebar"))
+        self.actionToggle_Sidebar.setText("Toggle Sidebar")
         self.actionToggle_Bury = QtWidgets.QAction(Dialog)
-        self.actionToggle_Bury.setText(_("Toggle Bury"))
-        self.actionToggle_Bury.setText(_("Toggle Bury"))
+        self.actionToggle_Bury.setText("Toggle Bury")
+        self.actionToggle_Bury.setText("Toggle Bury")
         self.actionToggle_Fastbar = QtWidgets.QAction(Dialog)
         self.actionToggle_Fastbar.setObjectName("toggleFastbar")
-        self.actionToggle_Fastbar.setText(_("Toggle Fastbar"))
+        self.actionToggle_Fastbar.setText("Toggle Fastbar")
         self.menuJump.addSeparator()
         self.menuJump.addAction(self.actionToggle_Sidebar)
         self.menuJump.addAction(self.actionToggle_Fastbar)
