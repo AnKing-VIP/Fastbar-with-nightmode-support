@@ -62,10 +62,11 @@ addHook("night_mode_state_changed", refresh_night_mode_state)
 
 
 night_mode_stylesheet = """
-QToolBar { background-color: #272828!important;
-background: #272828!important;
-spacing: 0px;
-color:  #272828!important;
+QToolBar { 
+    background-color: #272828!important;
+    background: #272828!important;
+    spacing: 0px;
+    color:  #272828!important;
 }
 QToolBar::separator{
     border: 0px solid #272828!important;
