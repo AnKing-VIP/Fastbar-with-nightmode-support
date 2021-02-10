@@ -61,6 +61,44 @@ def refresh_night_mode_state(nm_state):
 addHook("night_mode_state_changed", refresh_night_mode_state)
 
 
+night_mode_stylesheet = """
+QToolBar { background-color: #272828!important;
+background: #272828!important;
+spacing: 0px;
+color:  #272828!important;
+}
+QToolBar::separator{
+    border: 0px solid #272828!important;
+    background-color: #272828!important;
+    background: #272828!important;
+    margin-left: 0px;
+    margin-right: 0px;
+    width: 1px;
+}
+QToolButton {
+    border: 0px solid #272828;
+    border-radius: 0px;
+    background-color: #272828;
+    background: #272828!important;
+    color:  #d7d7d7;
+    margin-left: 0px;
+    margin-right: 0px;
+}    
+QToolBar::handle {
+    color: #272828;
+    background:#272828;
+    background-color: #272828;
+}
+QMacToolBar {
+    border: 0px solid #272828!important;
+    background-color: #272828!important;
+    background: #272828!important;
+    color: #272828!important;   
+    spacing:0px;             
+}
+"""
+
+
 class Fastbar:
     def addToolBar(self):
         tb = QToolBar("Fastbar")
@@ -124,43 +162,7 @@ class Fastbar:
             #     tb.addSeparator()
 
         if night_mode_on:
-            st = """
-            QToolBar { background-color: #272828!important;
-            background: #272828!important;
-            spacing: 0px;
-            color:  #272828!important;
-            }
-            QToolBar::separator{
-                border: 0px solid #272828!important;
-                background-color: #272828!important;
-                background: #272828!important;
-                margin-left: 0px;
-                margin-right: 0px;
-                width: 1px;
-            }
-            QToolButton {
-                border: 0px solid #272828;
-                border-radius: 0px;
-                background-color: #272828;
-                background: #272828!important;
-                color:  #d7d7d7;
-                margin-left: 0px;
-                margin-right: 0px;
-            }    
-            QToolBar::handle {
-                color: #272828;
-                background:#272828;
-                background-color: #272828;
-            }
-            QMacToolBar {
-                border: 0px solid #272828!important;
-                background-color: #272828!important;
-                background: #272828!important;
-                color: #272828!important;   
-                spacing:0px;             
-            }
-            """
-            tb.setStyleSheet(st)
+            tb.setStyleSheet(night_mode_stylesheet)
         self.addToolBar(tb)
 
     def isBuried(self):
