@@ -82,68 +82,33 @@ class Fastbar:
 
         self.form.actionDelete.setText("Delete Note")
 
-        if night_mode_on or theme_manager.night_mode:
-            icon_fastbar = qta.icon("ei.remove-sign", color="white")
-            icon_sidebar = qta.icon("fa.exchange", color="white")
-            icon_add = qta.icon("fa.plus-square", color="white")
-            icon_info = qta.icon("fa.info-circle", color="white")
-            icon_mark = qta.icon("fa.star", color="white")
-            icon_suspend = qta.icon("fa.pause-circle", color="white")
-            icon_bury = qta.icon("fa.step-backward", color="white")
-            icon_deck = qta.icon("fa.inbox", color="white")
-            icon_note = qta.icon("fa.leanpub", color="white")
-            icon_tag = qta.icon("fa.tag", color="white")
-            icon_untag = qta.icon("fa.eraser", color="white")
-            icon_tag_unused = qta.icon("fa.magic", color="white")
-            icon_delete = qta.icon("fa.trash-o", color="white")
-            icon_resched = qta.icon("fa.history", color="white")
-            icon_repos = qta.icon("fa.sign-in", color="white")
-        else:
-            icon_fastbar = qta.icon("ei.remove-sign")
-            icon_sidebar = qta.icon("fa.exchange")
-            icon_add = qta.icon("fa.plus-square")
-            icon_info = qta.icon("fa.info-circle")
-            icon_mark = qta.icon("fa.star")
-            icon_suspend = qta.icon("fa.pause-circle")
-            icon_bury = qta.icon("fa.step-backward")
-            icon_deck = qta.icon("fa.inbox")
-            icon_note = qta.icon("fa.leanpub")
-            icon_tag = qta.icon("fa.tag")
-            icon_untag = qta.icon("fa.eraser")
-            icon_tag_unused = qta.icon("fa.magic")
-            icon_delete = qta.icon("fa.trash-o")
-            icon_resched = qta.icon("fa.sign-in")
-            icon_repos = qta.icon("fa.history")
 
-        if gc("enable compact mode"):
-            # TODO: Create custom QToolBar widget to handle word-wrapping
-            # properly
-            all_actions = [
-                "actionToggle_Fastbar",
-                "actionToggle_Sidebar",
-                "actionAdd",
-                "action_Info",
-                "actionToggle_Mark",
-                "actionToggle_Suspend",
-                "actionToggle_Bury",
-                "actionChange_Deck",
-                "actionChangeModel",
-                "actionAdd_Tags",
-                "actionRemove_Tags",
-                "actionClear_Unused_Tags",
-                "actionDelete",
+        all_actions = [
+            ["actionToggle_Fastbar", "ei.remove-sign"],
+            ["actionToggle_Sidebar", "fa.exchange"],
+            ["actionAdd", "fa.plus-square"],
+            ["action_Info", "fa.info-circle"],
+            ["actionToggle_Mark", "fa.star"],
+            ["actionToggle_Suspend", "fa.pause-circle"],
+            ["actionToggle_Bury", "fa.step-backward"],
+            ["actionChange_Deck", "fa.inbox"],
+            ["actionChangeModel", "fa.leanpub"],
+            ["actionAdd_Tags", "fa.tag"],
+            ["actionRemove_Tags", "fa.eraser"],
+            ["actionClear_Unused_Tags", "fa.magic"],
+            ["actionDelete", "fa.trash-o"],
+            ["actionReschedule" if anki_21_version < 41 else "action_set_due_date", "fa.history"],
+            ["actionReposition", "fa.sign-in"],
+        ]
 
-                "actionReposition",
-            ]
-            if anki_21_version < 41:
-                all_actions.insert(-2, "actionReschedule")
-            else:
-                all_actions.insert(-2, "action_set_due_date")
-
-            for action_name in all_actions:
-                action = getattr(self.form, action_name, None)
-                if action is None:
-                    continue
+        for idx, val in enumerate(all_actions):
+            action_name, icon_name = val
+            action = getattr(self.form, action_name, None)
+            if action is None:
+                continue
+            if gc("enable compact mode"):
+                # TODO: Create custom QToolBar widget to handle word-wrapping
+                # properly
                 action_text = action.text()
                 if " " in action_text:
                     word_wrapped_text = action_text.replace(" ", "\n", 1)
@@ -152,58 +117,12 @@ class Fastbar:
                     # "\n" contains an invisible space, since qt strips tailing whitespace
                     word_wrapped_text = action_text + "\n‎"
                 action.setText(word_wrapped_text)
+            icon = qta.icon(icon_name, color="white" if night_mode_on or theme_manager.night_mode else "black")  
+            action.setIcon(icon)
+            tb.addAction(action)
+            # if idx != len(all_actions)-1:  # python uses zero-based indexing
+            #     tb.addSeparator()
 
-        self.form.actionToggle_Fastbar.setIcon(icon_fastbar)
-        self.form.actionToggle_Sidebar.setIcon(icon_sidebar)
-        self.form.actionAdd.setIcon(icon_add)
-        self.form.action_Info.setIcon(icon_info)
-        self.form.actionToggle_Mark.setIcon(icon_mark)
-        self.form.actionToggle_Suspend.setIcon(icon_suspend)
-        self.form.actionToggle_Bury.setIcon(icon_bury)
-        self.form.actionChange_Deck.setIcon(icon_deck)
-        self.form.actionChangeModel.setIcon(icon_note)
-        self.form.actionAdd_Tags.setIcon(icon_tag)
-        self.form.actionRemove_Tags.setIcon(icon_untag)
-        self.form.actionClear_Unused_Tags.setIcon(icon_tag_unused)
-        self.form.actionDelete.setIcon(icon_delete)
-        
-        if anki_21_version < 41: 
-            self.form.actionReschedule.setIcon(icon_resched)
-        else:
-            self.form.action_set_due_date.setIcon(icon_resched)
-        self.form.actionReposition.setIcon(icon_repos)
-
-        tb.addAction(self.form.actionToggle_Fastbar)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionToggle_Sidebar)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionAdd)
-        # tb.addSeparator()
-        tb.addAction(self.form.action_Info)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionToggle_Mark)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionToggle_Suspend)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionToggle_Bury)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionChange_Deck)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionChangeModel)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionAdd_Tags)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionRemove_Tags)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionClear_Unused_Tags)
-        # tb.addSeparator()
-        tb.addAction(self.form.actionDelete)
-        # tb.addSeparator()
-        if anki_21_version < 41: 
-            tb.addAction(self.form.actionReschedule)
-        else:
-            tb.addAction(self.form.action_set_due_date)
-        tb.addAction(self.form.actionReposition)
         if night_mode_on:
             st = """
             QToolBar { background-color: #272828!important;
