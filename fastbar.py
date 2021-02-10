@@ -1,4 +1,4 @@
-2# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # pylint: skip-file
 #
 # Fastbar with nightmode support: an Anki 2.1 add-on adds a toolbar and toggle the sidebar
@@ -66,61 +66,74 @@ class Fastbar:
         tb = QToolBar("Fastbar")
         tb.setObjectName("Fastbar")
         if night_mode_on:
-             tb.setIconSize(QtCore.QSize(15, 15)) #90,20
+            tb.setIconSize(QtCore.QSize(15, 15))  # 90,20
         else:
             tb.setIconSize(QtCore.QSize(15, 15))
         tb.setToolButtonStyle(3)
-        tb.setStyleSheet('QToolBar{spacing:0px;}')
+        tb.setStyleSheet("QToolBar{spacing:0px;}")
 
-
-        self.form.actionToggle_Sidebar.triggered.connect(lambda: self.sidebarDockWidget.toggleViewAction().trigger())
+        self.form.actionToggle_Sidebar.triggered.connect(
+            lambda: self.sidebarDockWidget.toggleViewAction().trigger()
+        )
         self.form.actionToggle_Bury.triggered.connect(self.onBury)
-        self.form.actionToggle_Fastbar.triggered.connect(lambda: tb.toggleViewAction().trigger())
+        self.form.actionToggle_Fastbar.triggered.connect(
+            lambda: tb.toggleViewAction().trigger()
+        )
 
         self.form.actionDelete.setText("Delete Note")
 
         if night_mode_on or theme_manager.night_mode:
-            icon_fastbar = qta.icon('ei.remove-sign', color="white")
-            icon_sidebar = qta.icon('fa.exchange', color="white")
-            icon_add = qta.icon('fa.plus-square', color="white")
-            icon_info = qta.icon('fa.info-circle', color="white")
-            icon_mark = qta.icon('fa.star', color="white")
-            icon_suspend = qta.icon('fa.pause-circle', color="white")
-            icon_bury = qta.icon('fa.step-backward', color="white")
-            icon_deck = qta.icon('fa.inbox', color="white")
-            icon_note = qta.icon('fa.leanpub', color="white")
-            icon_tag = qta.icon('fa.tag', color="white")
-            icon_untag = qta.icon('fa.eraser', color="white")
-            icon_tag_unused = qta.icon('fa.magic', color="white")
-            icon_delete = qta.icon('fa.trash-o', color="white")
-            icon_resched = qta.icon('fa.history', color="white")
-            icon_repos = qta.icon('fa.sign-in', color="white")
+            icon_fastbar = qta.icon("ei.remove-sign", color="white")
+            icon_sidebar = qta.icon("fa.exchange", color="white")
+            icon_add = qta.icon("fa.plus-square", color="white")
+            icon_info = qta.icon("fa.info-circle", color="white")
+            icon_mark = qta.icon("fa.star", color="white")
+            icon_suspend = qta.icon("fa.pause-circle", color="white")
+            icon_bury = qta.icon("fa.step-backward", color="white")
+            icon_deck = qta.icon("fa.inbox", color="white")
+            icon_note = qta.icon("fa.leanpub", color="white")
+            icon_tag = qta.icon("fa.tag", color="white")
+            icon_untag = qta.icon("fa.eraser", color="white")
+            icon_tag_unused = qta.icon("fa.magic", color="white")
+            icon_delete = qta.icon("fa.trash-o", color="white")
+            icon_resched = qta.icon("fa.history", color="white")
+            icon_repos = qta.icon("fa.sign-in", color="white")
         else:
-            icon_fastbar = qta.icon('ei.remove-sign')
-            icon_sidebar = qta.icon('fa.exchange')
-            icon_add = qta.icon('fa.plus-square')
-            icon_info = qta.icon('fa.info-circle')
-            icon_mark = qta.icon('fa.star')
-            icon_suspend = qta.icon('fa.pause-circle')
-            icon_bury = qta.icon('fa.step-backward')
-            icon_deck = qta.icon('fa.inbox')
-            icon_note = qta.icon('fa.leanpub')
-            icon_tag = qta.icon('fa.tag')
-            icon_untag = qta.icon('fa.eraser')
-            icon_tag_unused = qta.icon('fa.magic')
-            icon_delete = qta.icon('fa.trash-o')
-            icon_resched = qta.icon('fa.sign-in')
-            icon_repos = qta.icon('fa.history')
-        
+            icon_fastbar = qta.icon("ei.remove-sign")
+            icon_sidebar = qta.icon("fa.exchange")
+            icon_add = qta.icon("fa.plus-square")
+            icon_info = qta.icon("fa.info-circle")
+            icon_mark = qta.icon("fa.star")
+            icon_suspend = qta.icon("fa.pause-circle")
+            icon_bury = qta.icon("fa.step-backward")
+            icon_deck = qta.icon("fa.inbox")
+            icon_note = qta.icon("fa.leanpub")
+            icon_tag = qta.icon("fa.tag")
+            icon_untag = qta.icon("fa.eraser")
+            icon_tag_unused = qta.icon("fa.magic")
+            icon_delete = qta.icon("fa.trash-o")
+            icon_resched = qta.icon("fa.sign-in")
+            icon_repos = qta.icon("fa.history")
+
         if gc("enable compact mode"):
             # TODO: Create custom QToolBar widget to handle word-wrapping
             # properly
             for action_name in (
-                "actionToggle_Fastbar", "actionToggle_Sidebar", "actionAdd",
-                "action_Info", "actionToggle_Mark", "actionToggle_Suspend",
-                "actionToggle_Bury", "actionChange_Deck", "actionChangeModel",
-                "actionAdd_Tags", "actionRemove_Tags", "actionClear_Unused_Tags",
-                "actionDelete", "actionReschedule", "actionReposition"
+                "actionToggle_Fastbar",
+                "actionToggle_Sidebar",
+                "actionAdd",
+                "action_Info",
+                "actionToggle_Mark",
+                "actionToggle_Suspend",
+                "actionToggle_Bury",
+                "actionChange_Deck",
+                "actionChangeModel",
+                "actionAdd_Tags",
+                "actionRemove_Tags",
+                "actionClear_Unused_Tags",
+                "actionDelete",
+                "actionReschedule",
+                "actionReposition",
             ):
                 action = getattr(self.form, action_name, None)
                 if action is None:
@@ -151,31 +164,31 @@ class Fastbar:
         self.form.actionReposition.setIcon(icon_repos)
 
         tb.addAction(self.form.actionToggle_Fastbar)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionToggle_Sidebar)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionAdd)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.action_Info)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionToggle_Mark)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionToggle_Suspend)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionToggle_Bury)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionChange_Deck)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionChangeModel)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionAdd_Tags)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionRemove_Tags)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionClear_Unused_Tags)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionDelete)
-        #tb.addSeparator()
+        # tb.addSeparator()
         tb.addAction(self.form.actionReschedule)
         tb.addAction(self.form.actionReposition)
         if night_mode_on:
@@ -243,14 +256,17 @@ class Fastbar:
         if mw.col.schedVer() == 1:
             self.col.db.execute(
                 "update cards set queue=type,mod=?,usn=? "
-                "where queue = -2 and id in "+ ids2str(ids),
-                intTime(), self.col.usn())
+                "where queue = -2 and id in " + ids2str(ids),
+                intTime(),
+                self.col.usn(),
+            )
         elif mw.col.schedVer() == 2:
             self.col.db.execute(
                 "update cards set queue=type,mod=?,usn=? "
-                "where queue in (-2,-3) and id in "+ ids2str(ids),
-                intTime(), self.col.usn())
-            
+                "where queue in (-2,-3) and id in " + ids2str(ids),
+                intTime(),
+                self.col.usn(),
+            )
 
     def setupUi(self, Dialog):
         self.actionToggle_Sidebar = QtWidgets.QAction(Dialog)
@@ -267,6 +283,7 @@ class Fastbar:
         self.menuJump.addAction(self.actionToggle_Fastbar)
         self.menu_Cards.addSeparator()
         self.menu_Cards.addAction(self.actionToggle_Bury)
+
 
 addHook("browser.setupMenus", Fastbar.addToolBar)
 Browser.isBuried = Fastbar.isBuried
