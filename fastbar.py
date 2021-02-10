@@ -105,7 +105,6 @@ class Fastbar:
         tb.setObjectName("Fastbar")
         tb.setIconSize(QtCore.QSize(15, 15))
         tb.setToolButtonStyle(3)
-        tb.setStyleSheet("QToolBar{spacing:0px;}")
 
         self.form.actionToggle_Sidebar.triggered.connect(
             lambda: self.sidebarDockWidget.toggleViewAction().trigger()
@@ -160,6 +159,8 @@ class Fastbar:
 
         if night_mode_on:
             tb.setStyleSheet(night_mode_stylesheet)
+        else:
+            tb.setStyleSheet("QToolBar{spacing:0px;}")
         self.addToolBar(tb)
 
     def isBuried(self):
