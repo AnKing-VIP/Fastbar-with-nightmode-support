@@ -103,10 +103,7 @@ class Fastbar:
     def addToolBar(self):
         tb = QToolBar("Fastbar")
         tb.setObjectName("Fastbar")
-        if night_mode_on:
-            tb.setIconSize(QtCore.QSize(15, 15))  # 90,20
-        else:
-            tb.setIconSize(QtCore.QSize(15, 15))
+        tb.setIconSize(QtCore.QSize(15, 15))
         tb.setToolButtonStyle(3)
         tb.setStyleSheet("QToolBar{spacing:0px;}")
 
