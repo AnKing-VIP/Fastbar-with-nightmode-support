@@ -43,8 +43,8 @@ def gc(arg, fail=False):
 
 
 from anki import version as anki_version
-old_anki = tuple(int(i) for i in anki_version.split(".")) < (2, 1, 20)
-if old_anki:
+anki_21_version = int(anki_version.split(".")[-1]) 
+if anki_21_version < 20:
     class Object():
         pass
     theme_manager = Object()
@@ -118,7 +118,7 @@ class Fastbar:
         if gc("enable compact mode"):
             # TODO: Create custom QToolBar widget to handle word-wrapping
             # properly
-            for action_name in (
+            all_actions = [
                 "actionToggle_Fastbar",
                 "actionToggle_Sidebar",
                 "actionAdd",
@@ -132,9 +132,15 @@ class Fastbar:
                 "actionRemove_Tags",
                 "actionClear_Unused_Tags",
                 "actionDelete",
-                "actionReschedule",
+
                 "actionReposition",
-            ):
+            ]
+            if anki_21_version < 41:
+                all_actions.insert(-2, "actionReschedule")
+            else:
+                all_actions.insert(-2, "action_set_due_date")
+
+            for action_name in all_actions:
                 action = getattr(self.form, action_name, None)
                 if action is None:
                     continue
@@ -160,7 +166,11 @@ class Fastbar:
         self.form.actionRemove_Tags.setIcon(icon_untag)
         self.form.actionClear_Unused_Tags.setIcon(icon_tag_unused)
         self.form.actionDelete.setIcon(icon_delete)
-        self.form.actionReschedule.setIcon(icon_resched)
+        
+        if anki_21_version < 41: 
+            self.form.actionReschedule.setIcon(icon_resched)
+        else:
+            self.form.action_set_due_date.setIcon(icon_resched)
         self.form.actionReposition.setIcon(icon_repos)
 
         tb.addAction(self.form.actionToggle_Fastbar)
@@ -189,7 +199,10 @@ class Fastbar:
         # tb.addSeparator()
         tb.addAction(self.form.actionDelete)
         # tb.addSeparator()
-        tb.addAction(self.form.actionReschedule)
+        if anki_21_version < 41: 
+            tb.addAction(self.form.actionReschedule)
+        else:
+            tb.addAction(self.form.action_set_due_date)
         tb.addAction(self.form.actionReposition)
         if night_mode_on:
             st = """
