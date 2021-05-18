@@ -235,15 +235,16 @@ class Fastbar:
             )
 
     def setupUi(self, Dialog):
-        self.actionToggle_Sidebar = QtWidgets.QAction(Dialog)
-        self.actionToggle_Sidebar.setObjectName("toggleSidebar")
-        self.actionToggle_Sidebar.setText("Toggle Sidebar")
-        self.actionToggle_Bury = QtWidgets.QAction(Dialog)
-        self.actionToggle_Bury.setText("Toggle Bury")
-        self.actionToggle_Bury.setText("Toggle Bury")
-        self.actionToggle_Fastbar = QtWidgets.QAction(Dialog)
-        self.actionToggle_Fastbar.setObjectName("toggleFastbar")
-        self.actionToggle_Fastbar.setText("Toggle Fastbar")
+        def createQAction(objname, text):
+            out = QtWidgets.QAction(Dialog)
+            out.setObjectName(objname)
+            out.setText(text)
+            return out
+ 
+        self.actionToggle_Sidebar = createQAction("toggleSidebar", "Toggle Sidebar")
+        self.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
+        self.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
+
         self.menuJump.addSeparator()
         self.menuJump.addAction(self.actionToggle_Sidebar)
         self.menuJump.addAction(self.actionToggle_Fastbar)
