@@ -24,7 +24,10 @@
 
 from aqt.qt import *
 from PyQt5 import QtWidgets, QtCore
-from aqt import mw
+from aqt import (
+    gui_hooks,
+    mw,
+)
 from aqt.forms.browser import Ui_Dialog
 from aqt.browser import Browser
 from anki.sched import Scheduler as schedv1
@@ -40,6 +43,23 @@ def gc(arg, fail=False):
     if conf:
         return conf.get(arg, fail)
     return fail
+
+
+def maybe_import_other_addon(addon_id):
+    try: 
+        a = __import__(addon_id)
+    except ModuleNotFoundError:
+        return None
+    else:
+        return a
+
+
+def check_other_addons():
+    global BetterSearchAddon
+    global ExtendedTagAddon
+    BetterSearchAddon = maybe_import_other_addon("1052724801")  # BetterSearch
+    ExtendedTagAddon = maybe_import_other_addon("1135507717")  # Extended Tag Add/Edit Dialog
+gui_hooks.profile_did_open.append(check_other_addons)
 
 
 from anki import version as anki_version
@@ -101,7 +121,7 @@ QMacToolBar {
 
 
 class Fastbar:
-    def addToolBar(self):
+    def addToolBar(self):  # self is browser
         tb = QToolBar("Fastbar")
         tb.setObjectName("Fastbar")
         tb.setIconSize(QtCore.QSize(15, 15))
@@ -119,26 +139,39 @@ class Fastbar:
 
 
         all_actions = [
-            ["actionToggle_Fastbar", "ei.remove-sign"],
-            ["actionToggle_Sidebar", "fa.exchange"],
-            ["actionAdd", "fa.plus-square"],
-            ["action_Info", "fa.info-circle"],
-            ["actionToggle_Mark", "fa.star"],
-            ["actionToggle_Suspend", "fa.pause-circle"],
-            ["actionToggle_Bury", "fa.step-backward"],
-            ["actionChange_Deck", "fa.inbox"],
-            ["actionChangeModel", "fa.leanpub"],
-            ["actionAdd_Tags", "fa.tag"],
-            ["actionRemove_Tags", "fa.eraser"],
-            ["actionClear_Unused_Tags", "fa.magic"],
-            ["actionDelete", "fa.trash-o"],
+            ["actionToggle_Fastbar", "ei.remove-sign"],       #  0
+            ["actionToggle_Sidebar", "fa.exchange"],          #  1
+            ["actionAdd", "fa.plus-square"],                  #  2
+            ["action_Info", "fa.info-circle"],                #  3
+            ["actionToggle_Mark", "fa.star"],                 #  4
+            ["actionToggle_Suspend", "fa.pause-circle"],      #  5
+            ["actionToggle_Bury", "fa.step-backward"],        #  6
+            ["actionChange_Deck", "fa.inbox"],                #  7
+            ["actionChangeModel", "fa.leanpub"],              #  8
+            ["actionAdd_Tags", "fa.tag"],                     #  9
+            ["actionRemove_Tags", "fa.eraser"],               # 10
+            ["actionClear_Unused_Tags", "fa.magic"],          # 11
+            ["actionDelete", "fa.trash-o"],                   # 12
             ["actionReschedule" if anki_21_version < 41 else "action_set_due_date", "fa.history"],
             ["actionReposition", "fa.sign-in"],
         ]
+        ExTaDiNo = gc("button for Extended Tag Edit Addon", 12)
+        if ExtendedTagAddon and ExTaDiNo:
+            if hasattr(self, "ExTaDiAction"):
+                all_actions.insert(ExTaDiNo, [self.ExTaDiAction, "fa.tags"])
+        BeSeNo = gc("button for BetterSearch", 13)
+        if BetterSearchAddon and BeSeNo:
+            if hasattr(self, "BeSeAction"):
+                all_actions.insert(BeSeNo, [self.BeSeAction, "fa.search-plus"])
 
         for idx, val in enumerate(all_actions):
             action_name, icon_name = val
-            action = getattr(self.form, action_name, None)
+
+            if isinstance(action_name, str):
+                action = getattr(self.form, action_name, None)
+            else:
+                action = action_name
+
             if action is None:
                 continue
             if gc("enable compact mode"):
@@ -202,15 +235,16 @@ class Fastbar:
             )
 
     def setupUi(self, Dialog):
-        self.actionToggle_Sidebar = QtWidgets.QAction(Dialog)
-        self.actionToggle_Sidebar.setObjectName("toggleSidebar")
-        self.actionToggle_Sidebar.setText("Toggle Sidebar")
-        self.actionToggle_Bury = QtWidgets.QAction(Dialog)
-        self.actionToggle_Bury.setText("Toggle Bury")
-        self.actionToggle_Bury.setText("Toggle Bury")
-        self.actionToggle_Fastbar = QtWidgets.QAction(Dialog)
-        self.actionToggle_Fastbar.setObjectName("toggleFastbar")
-        self.actionToggle_Fastbar.setText("Toggle Fastbar")
+        def createQAction(objname, text):
+            out = QtWidgets.QAction(Dialog)
+            out.setObjectName(objname)
+            out.setText(text)
+            return out
+ 
+        self.actionToggle_Sidebar = createQAction("toggleSidebar", "Toggle Sidebar")
+        self.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
+        self.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
+
         self.menuJump.addSeparator()
         self.menuJump.addAction(self.actionToggle_Sidebar)
         self.menuJump.addAction(self.actionToggle_Fastbar)
