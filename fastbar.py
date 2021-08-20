@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# pylint: skip-file
 #
 # Fastbar with nightmode support: an Anki 2.1 add-on adds a toolbar and toggle the sidebar
 # in the Card Browser of Anki 2.1.
@@ -24,7 +23,6 @@
 #         Released under the MIT License.
 #         https://bitbucket.org/gutworth/six/src/LICENSE
 
-# type: ignore
 
 from aqt.qt import *
 from PyQt5 import QtWidgets, QtCore
