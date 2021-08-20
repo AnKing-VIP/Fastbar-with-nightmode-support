@@ -13,14 +13,16 @@
 #            2020+ The AnKing (https://www.ankingmed.com/) and /u/ijgnord
 #
 #
-# Third party softwares used with Fastbar.
-# QtAwesome. Copyright 2015 The Spyder development team.
-# Released under the MIT License.
-# https://github.com/spyder-ide/qtawesome/blob/master/LICENSE
-# The Font Awesome is licensed under the SIL Open Font License.
-# Six. Copyright 2010-2015 Benjamin Peterson
-# Released under the MIT License.
-# https://bitbucket.org/gutworth/six/src/LICENSE
+# Third party softwares used with Fastbar:
+#     QtAwesome 
+#         Copyright 2015 The Spyder development team.
+#         Released under the MIT License.
+#         https://github.com/spyder-ide/qtawesome/blob/master/LICENSE
+#         The Font Awesome is licensed under the SIL Open Font License.
+#     Six
+#         Copyright 2010-2015 Benjamin Peterson
+#         Released under the MIT License.
+#         https://bitbucket.org/gutworth/six/src/LICENSE
 
 # type: ignore
 
