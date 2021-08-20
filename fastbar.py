@@ -120,143 +120,142 @@ QMacToolBar {
 """
 
 
-class Fastbar:
-    def addToolBar(self):  # self is browser
-        tb = QToolBar("Fastbar")
-        tb.setObjectName("Fastbar")
-        tb.setIconSize(QtCore.QSize(15, 15))
-        tb.setToolButtonStyle(3)
 
-        self.form.actionToggle_Sidebar.triggered.connect(
-            lambda: self.sidebarDockWidget.toggleViewAction().trigger()
+def isBuried(self):  # self is browser
+    if mw.col.schedVer() == 1:
+        return not not (self.card and self.card.queue == -2)
+    if mw.col.schedVer() in [2,3]:
+        return not not (self.card and self.card.queue in [-2, -3])
+
+
+def onBury(self):  # self is browser
+    self.editor.saveNow(lambda b=self: _onBury(b))
+
+
+def _onBury(self):  # self is browser
+    bur = not isBuried(self)
+    c = self.selectedCards()
+    if bur:
+        mw.col.sched.buryCards(c)
+    else:
+        unburiedCards(self, c)
+    self.model.reset()
+    self.mw.requireReset()
+
+
+def unburiedCards(self, ids):  # self is browser
+    "Unburied cards."
+    self.col.log(ids)
+    if self.col.schedVer() == 1:
+        self.col.db.execute(
+            "update cards set queue=type,mod=?,usn=? "
+            "where queue = -2 and id in " + ids2str(ids),
+            intTime(),
+            self.col.usn(),
         )
-        self.form.actionToggle_Bury.triggered.connect(self.onBury)
-        self.form.actionToggle_Fastbar.triggered.connect(
-            lambda: tb.toggleViewAction().trigger()
+    elif self.col.schedVer() == 2:
+        self.col.db.execute(
+            "update cards set queue=type,mod=?,usn=? "
+            "where queue in (-2,-3) and id in " + ids2str(ids),
+            intTime(),
+            self.col.usn(),
         )
 
-        self.form.actionDelete.setText("Delete Note")
+
+def addToolBar(self):  # self is browser
+    tb = QToolBar("Fastbar")
+    tb.setObjectName("Fastbar")
+    tb.setIconSize(QtCore.QSize(15, 15))
+    tb.setToolButtonStyle(3)
+
+    self.form.actionToggle_Sidebar.triggered.connect(
+        lambda: self.sidebarDockWidget.toggleViewAction().trigger()
+    )
+    self.form.actionToggle_Bury.triggered.connect(lambda _, b=self: onBury(b))
+    self.form.actionToggle_Fastbar.triggered.connect(
+        lambda: tb.toggleViewAction().trigger()
+    )
+
+    self.form.actionDelete.setText("Delete Note")
 
 
-        all_actions = [
-            ["actionToggle_Fastbar", "ei.remove-sign"],       #  0
-            ["actionToggle_Sidebar", "fa.exchange"],          #  1
-            ["actionAdd", "fa.plus-square"],                  #  2
-            ["action_Info", "fa.info-circle"],                #  3
-            ["actionToggle_Mark", "fa.star"],                 #  4
-            ["actionToggle_Suspend", "fa.pause-circle"],      #  5
-            ["actionToggle_Bury", "fa.step-backward"],        #  6
-            ["actionChange_Deck", "fa.inbox"],                #  7
-            ["actionChangeModel", "fa.leanpub"],              #  8
-            ["actionAdd_Tags", "fa.tag"],                     #  9
-            ["actionRemove_Tags", "fa.eraser"],               # 10
-            ["actionClear_Unused_Tags", "fa.magic"],          # 11
-            ["actionDelete", "fa.trash-o"],                   # 12
-            ["actionReschedule" if anki_21_version < 41 else "action_set_due_date", "fa.history"],
-            ["actionReposition", "fa.sign-in"],
-        ]
-        ExTaDiNo = gc("button for Extended Tag Edit Addon", 12)
-        if ExtendedTagAddon and ExTaDiNo:
-            if hasattr(self, "ExTaDiAction"):
-                all_actions.insert(ExTaDiNo, [self.ExTaDiAction, "fa.tags"])
-        BeSeNo = gc("button for BetterSearch", 13)
-        if BetterSearchAddon and BeSeNo:
-            if hasattr(self, "BeSeAction"):
-                all_actions.insert(BeSeNo, [self.BeSeAction, "fa.search-plus"])
+    all_actions = [
+        ["actionToggle_Fastbar", "ei.remove-sign"],       #  0
+        ["actionToggle_Sidebar", "fa.exchange"],          #  1
+        ["actionAdd", "fa.plus-square"],                  #  2
+        ["action_Info", "fa.info-circle"],                #  3
+        ["actionToggle_Mark", "fa.star"],                 #  4
+        ["actionToggle_Suspend", "fa.pause-circle"],      #  5
+        ["actionToggle_Bury", "fa.step-backward"],        #  6
+        ["actionChange_Deck", "fa.inbox"],                #  7
+        ["actionChangeModel", "fa.leanpub"],              #  8
+        ["actionAdd_Tags", "fa.tag"],                     #  9
+        ["actionRemove_Tags", "fa.eraser"],               # 10
+        ["actionClear_Unused_Tags", "fa.magic"],          # 11
+        ["actionDelete", "fa.trash-o"],                   # 12
+        ["actionReschedule" if anki_21_version < 41 else "action_set_due_date", "fa.history"],
+        ["actionReposition", "fa.sign-in"],
+    ]
+    ExTaDiNo = gc("button for Extended Tag Edit Addon", 12)
+    if ExtendedTagAddon and ExTaDiNo:
+        if hasattr(self, "ExTaDiAction"):
+            all_actions.insert(ExTaDiNo, [self.ExTaDiAction, "fa.tags"])
+    BeSeNo = gc("button for BetterSearch", 13)
+    if BetterSearchAddon and BeSeNo:
+        if hasattr(self, "BeSeAction"):
+            all_actions.insert(BeSeNo, [self.BeSeAction, "fa.search-plus"])
 
-        for idx, val in enumerate(all_actions):
-            action_name, icon_name = val
+    for idx, val in enumerate(all_actions):
+        action_name, icon_name = val
 
-            if isinstance(action_name, str):
-                action = getattr(self.form, action_name, None)
+        if isinstance(action_name, str):
+            action = getattr(self.form, action_name, None)
+        else:
+            action = action_name
+
+        if action is None:
+            continue
+        if gc("enable compact mode"):
+            # TODO: Create custom QToolBar widget to handle word-wrapping
+            # properly
+            action_text = action.text()
+            if " " in action_text:
+                word_wrapped_text = action_text.replace(" ", "\n", 1)
             else:
-                action = action_name
+                # hacky way to align single-line labels
+                # "\n" contains an invisible space, since qt strips tailing whitespace
+                word_wrapped_text = action_text + "\n‎"
+            action.setText(word_wrapped_text)
+        icon = qta.icon(icon_name, color="white" if night_mode_on or theme_manager.night_mode else "black")  
+        action.setIcon(icon)
+        tb.addAction(action)
+        # if idx != len(all_actions)-1:  # python uses zero-based indexing
+        #     tb.addSeparator()
 
-            if action is None:
-                continue
-            if gc("enable compact mode"):
-                # TODO: Create custom QToolBar widget to handle word-wrapping
-                # properly
-                action_text = action.text()
-                if " " in action_text:
-                    word_wrapped_text = action_text.replace(" ", "\n", 1)
-                else:
-                    # hacky way to align single-line labels
-                    # "\n" contains an invisible space, since qt strips tailing whitespace
-                    word_wrapped_text = action_text + "\n‎"
-                action.setText(word_wrapped_text)
-            icon = qta.icon(icon_name, color="white" if night_mode_on or theme_manager.night_mode else "black")  
-            action.setIcon(icon)
-            tb.addAction(action)
-            # if idx != len(all_actions)-1:  # python uses zero-based indexing
-            #     tb.addSeparator()
-
-        if night_mode_on:
-            tb.setStyleSheet(night_mode_stylesheet)
-        else:
-            tb.setStyleSheet("QToolBar{spacing:0px;}")
-        self.addToolBar(tb)
-
-    def isBuried(self):
-        if mw.col.schedVer() == 1:
-            return not not (self.card and self.card.queue == -2)
-        if mw.col.schedVer() == 2:
-            return not not (self.card and self.card.queue in [-2, -3])
-
-    def onBury(self):
-        self.editor.saveNow(self._onBury)
-
-    def _onBury(self):
-        bur = not self.isBuried()
-        c = self.selectedCards()
-        if bur:
-            self.col.sched.buryCards(c)
-        else:
-            self.col.sched.unburiedCards(c)
-        self.model.reset()
-        self.mw.requireReset()
-
-    def unburiedCards(self, ids):
-        "Unburied cards."
-        self.col.log(ids)
-        if mw.col.schedVer() == 1:
-            self.col.db.execute(
-                "update cards set queue=type,mod=?,usn=? "
-                "where queue = -2 and id in " + ids2str(ids),
-                intTime(),
-                self.col.usn(),
-            )
-        elif mw.col.schedVer() == 2:
-            self.col.db.execute(
-                "update cards set queue=type,mod=?,usn=? "
-                "where queue in (-2,-3) and id in " + ids2str(ids),
-                intTime(),
-                self.col.usn(),
-            )
-
-    def setupUi(self, Dialog):
-        def createQAction(objname, text):
-            out = QtWidgets.QAction(Dialog)
-            out.setObjectName(objname)
-            out.setText(text)
-            return out
- 
-        self.actionToggle_Sidebar = createQAction("toggleSidebar", "Toggle Sidebar")
-        self.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
-        self.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
-
-        self.menuJump.addSeparator()
-        self.menuJump.addAction(self.actionToggle_Sidebar)
-        self.menuJump.addAction(self.actionToggle_Fastbar)
-        self.menu_Cards.addSeparator()
-        self.menu_Cards.addAction(self.actionToggle_Bury)
+    if night_mode_on:
+        tb.setStyleSheet(night_mode_stylesheet)
+    else:
+        tb.setStyleSheet("QToolBar{spacing:0px;}")
+    self.addToolBar(tb)
+gui_hooks.browser_menus_did_init.append(addToolBar)
 
 
-addHook("browser.setupMenus", Fastbar.addToolBar)
-Browser.isBuried = Fastbar.isBuried
-Browser.onBury = Fastbar.onBury
-Browser._onBury = Fastbar._onBury
-schedv1.unburiedCards = Fastbar.unburiedCards
-schedv2.unburiedCards = Fastbar.unburiedCards
+def setupUi(Ui_Dialog_instance, Dialog):
+    self = Ui_Dialog_instance
 
-Ui_Dialog.setupUi = wrap(Ui_Dialog.setupUi, Fastbar.setupUi)
+    def createQAction(objname, text):
+        out = QtWidgets.QAction(Dialog)
+        out.setObjectName(objname)
+        out.setText(text)
+        return out
+
+    self.actionToggle_Sidebar = createQAction("toggleSidebar", "Toggle Sidebar")
+    self.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
+    self.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
+
+    self.menuJump.addSeparator()
+    self.menuJump.addAction(self.actionToggle_Sidebar)
+    self.menuJump.addAction(self.actionToggle_Fastbar)
+    self.menu_Cards.addSeparator()
+    self.menu_Cards.addAction(self.actionToggle_Bury)
+Ui_Dialog.setupUi = wrap(Ui_Dialog.setupUi, setupUi)
