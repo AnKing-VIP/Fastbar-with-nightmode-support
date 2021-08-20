@@ -162,7 +162,7 @@ def unburiedCards(self, ids):  # self is browser
         )
 
 
-def addToolBar(self):  # self is browser
+def make_and_add_toolbar(self):  # self is browser
     tb = QToolBar("Fastbar")
     tb.setObjectName("Fastbar")
     tb.setIconSize(QtCore.QSize(15, 15))
@@ -236,8 +236,8 @@ def addToolBar(self):  # self is browser
         tb.setStyleSheet(night_mode_stylesheet)
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
-    self.addToolBar(tb)
-gui_hooks.browser_menus_did_init.append(addToolBar)
+    self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
+gui_hooks.browser_menus_did_init.append(make_and_add_toolbar)
 
 
 def setupUi(Ui_Dialog_instance, Dialog):
