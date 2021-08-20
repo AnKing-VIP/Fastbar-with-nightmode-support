@@ -1,26 +1,28 @@
 # -*- coding: utf-8 -*-
-# pylint: skip-file
 #
 # Fastbar with nightmode support: an Anki 2.1 add-on adds a toolbar and toggle the sidebar
 # in the Card Browser of Anki 2.1.
-# Version: 0.1.1
-# GitHub: https://github.com/luminousspice/anki-addons/
-#
-# Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
+# Version: 0.5
+# GitHub: https://github.com/AnKingMed/Fastbar-with-nightmode-support
+# 
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/copyleft/agpl.html
 #
-# Updated by The AnKing (https://www.ankingmed.com/)and /u/ijgnord
+# Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
+#                  (https://github.com/luminousspice/anki-addons/)
+#            2020+ The AnKing (https://www.ankingmed.com/) and /u/ijgnord
 #
-# Third party softwares used with Fastbar.
-# QtAwesome. Copyright 2015 The Spyder development team.
-# Released under the MIT License.
-# https://github.com/spyder-ide/qtawesome/blob/master/LICENSE
-# The Font Awesome is licensed under the SIL Open Font License.
-# Six. Copyright 2010-2015 Benjamin Peterson
-# Released under the MIT License.
-# https://bitbucket.org/gutworth/six/src/LICENSE
+#
+# Third party softwares used with Fastbar:
+#     QtAwesome 
+#         Copyright 2015 The Spyder development team.
+#         Released under the MIT License.
+#         https://github.com/spyder-ide/qtawesome/blob/master/LICENSE
+#         The Font Awesome is licensed under the SIL Open Font License.
+#     Six
+#         Copyright 2010-2015 Benjamin Peterson
+#         Released under the MIT License.
+#         https://bitbucket.org/gutworth/six/src/LICENSE
 
-# type: ignore
 
 from aqt.qt import *
 from PyQt5 import QtWidgets, QtCore
@@ -124,7 +126,7 @@ QMacToolBar {
 def isBuried(self):  # self is browser
     if mw.col.schedVer() == 1:
         return not not (self.card and self.card.queue == -2)
-    if mw.col.schedVer() in [2,3]:
+    if mw.col.schedVer() in [2, 3]:
         return not not (self.card and self.card.queue in [-2, -3])
 
 
@@ -153,7 +155,7 @@ def unburiedCards(self, ids):  # self is browser
             intTime(),
             self.col.usn(),
         )
-    elif self.col.schedVer() == 2:
+    elif self.col.schedVer() in [2, 3]:
         self.col.db.execute(
             "update cards set queue=type,mod=?,usn=? "
             "where queue in (-2,-3) and id in " + ids2str(ids),
@@ -162,7 +164,7 @@ def unburiedCards(self, ids):  # self is browser
         )
 
 
-def addToolBar(self):  # self is browser
+def make_and_add_toolbar(self):  # self is browser
     tb = QToolBar("Fastbar")
     tb.setObjectName("Fastbar")
     tb.setIconSize(QtCore.QSize(15, 15))
@@ -236,8 +238,8 @@ def addToolBar(self):  # self is browser
         tb.setStyleSheet(night_mode_stylesheet)
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
-    self.addToolBar(tb)
-gui_hooks.browser_menus_did_init.append(addToolBar)
+    self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
+gui_hooks.browser_menus_did_init.append(make_and_add_toolbar)
 
 
 def setupUi(Ui_Dialog_instance, Dialog):
