@@ -3,13 +3,15 @@
 #
 # Fastbar with nightmode support: an Anki 2.1 add-on adds a toolbar and toggle the sidebar
 # in the Card Browser of Anki 2.1.
-# Version: 0.1.1
-# GitHub: https://github.com/luminousspice/anki-addons/
-#
-# Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
+# Version: 0.5
+# GitHub: https://github.com/AnKingMed/Fastbar-with-nightmode-support
+# 
 # License: GNU AGPL, version 3 or later; http://www.gnu.org/copyleft/agpl.html
 #
-# Updated by The AnKing (https://www.ankingmed.com/)and /u/ijgnord
+# Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
+#                  (https://github.com/luminousspice/anki-addons/)
+#            2020+ The AnKing (https://www.ankingmed.com/) and /u/ijgnord
+#
 #
 # Third party softwares used with Fastbar.
 # QtAwesome. Copyright 2015 The Spyder development team.
