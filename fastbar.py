@@ -124,7 +124,7 @@ QMacToolBar {
 def isBuried(self):  # self is browser
     if mw.col.schedVer() == 1:
         return not not (self.card and self.card.queue == -2)
-    if mw.col.schedVer() in [2,3]:
+    if mw.col.schedVer() in [2, 3]:
         return not not (self.card and self.card.queue in [-2, -3])
 
 
@@ -153,7 +153,7 @@ def unburiedCards(self, ids):  # self is browser
             intTime(),
             self.col.usn(),
         )
-    elif self.col.schedVer() == 2:
+    elif self.col.schedVer() in [2, 3]:
         self.col.db.execute(
             "update cards set queue=type,mod=?,usn=? "
             "where queue in (-2,-3) and id in " + ids2str(ids),
