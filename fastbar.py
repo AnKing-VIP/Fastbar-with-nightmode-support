@@ -138,30 +138,11 @@ def _onBury(self):  # self is browser
     bur = not isBuried(self)
     c = self.selectedCards()
     if bur:
-        mw.col.sched.buryCards(c)
+        self.col.sched.buryCards(c)
     else:
-        unburiedCards(self, c)
+        self.col.sched.unbury_cards(c)
     self.model.reset()
     self.mw.requireReset()
-
-
-def unburiedCards(self, ids):  # self is browser
-    "Unburied cards."
-    self.col.log(ids)
-    if self.col.schedVer() == 1:
-        self.col.db.execute(
-            "update cards set queue=type,mod=?,usn=? "
-            "where queue = -2 and id in " + ids2str(ids),
-            intTime(),
-            self.col.usn(),
-        )
-    elif self.col.schedVer() in [2, 3]:
-        self.col.db.execute(
-            "update cards set queue=type,mod=?,usn=? "
-            "where queue in (-2,-3) and id in " + ids2str(ids),
-            intTime(),
-            self.col.usn(),
-        )
 
 
 def make_and_add_toolbar(self):  # self is browser
