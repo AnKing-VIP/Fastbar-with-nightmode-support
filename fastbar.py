@@ -239,7 +239,7 @@ def make_and_add_toolbar(self):  # self is browser
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
-gui_hooks.browser_menus_did_init.append(make_and_add_toolbar)
+gui_hooks.browser_will_show.append(make_and_add_toolbar)
 
 
 def setupUi(Ui_Dialog_instance, Dialog):
