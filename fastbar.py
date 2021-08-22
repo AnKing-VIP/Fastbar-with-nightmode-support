@@ -138,30 +138,11 @@ def _onBury(self):  # self is browser
     bur = not isBuried(self)
     c = self.selectedCards()
     if bur:
-        mw.col.sched.buryCards(c)
+        self.col.sched.buryCards(c)
     else:
-        unburiedCards(self, c)
+        self.col.sched.unbury_cards(c)
     self.model.reset()
     self.mw.requireReset()
-
-
-def unburiedCards(self, ids):  # self is browser
-    "Unburied cards."
-    self.col.log(ids)
-    if self.col.schedVer() == 1:
-        self.col.db.execute(
-            "update cards set queue=type,mod=?,usn=? "
-            "where queue = -2 and id in " + ids2str(ids),
-            intTime(),
-            self.col.usn(),
-        )
-    elif self.col.schedVer() in [2, 3]:
-        self.col.db.execute(
-            "update cards set queue=type,mod=?,usn=? "
-            "where queue in (-2,-3) and id in " + ids2str(ids),
-            intTime(),
-            self.col.usn(),
-        )
 
 
 def make_and_add_toolbar(self):  # self is browser
@@ -239,7 +220,7 @@ def make_and_add_toolbar(self):  # self is browser
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
-gui_hooks.browser_menus_did_init.append(make_and_add_toolbar)
+gui_hooks.browser_will_show.append(make_and_add_toolbar)
 
 
 def setupUi(Ui_Dialog_instance, Dialog):
