@@ -1,5 +1,5 @@
-from PyQt5.QtCore import QTimer
-
+#from PyQt5.QtCore import QTimer
+from aqt.qt import QTimer
 
 class Spin:
 

@@ -9,11 +9,12 @@
 #
 # Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
 #                  (https://github.com/luminousspice/anki-addons/)
+#            2020+ ijgnd
 #            2020+ The AnKing (https://www.ankingmed.com/) and /u/ijgnord
 #
 #
 # Third party softwares used with Fastbar:
-#     QtAwesome 
+#     QtAwesome (modified for this add-on)
 #         Copyright 2015 The Spyder development team.
 #         Released under the MIT License.
 #         https://github.com/spyder-ide/qtawesome/blob/master/LICENSE
@@ -24,8 +25,12 @@
 #         https://bitbucket.org/gutworth/six/src/LICENSE
 
 
-from aqt.qt import *
-from PyQt5 import QtWidgets, QtCore
+from aqt.qt import (
+    QAction,
+    QSize,
+    QToolBar,
+    Qt,
+)
 from aqt import (
     gui_hooks,
     mw,
@@ -148,8 +153,8 @@ def _onBury(self):  # self is browser
 def make_and_add_toolbar(self):  # self is browser
     tb = QToolBar("Fastbar")
     tb.setObjectName("Fastbar")
-    tb.setIconSize(QtCore.QSize(15, 15))
-    tb.setToolButtonStyle(3)
+    tb.setIconSize(QSize(15, 15))
+    tb.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
 
     self.form.actionToggle_Sidebar.triggered.connect(
         lambda: self.sidebarDockWidget.toggleViewAction().trigger()
@@ -227,7 +232,7 @@ def setupUi(Ui_Dialog_instance, Dialog):
     self = Ui_Dialog_instance
 
     def createQAction(objname, text):
-        out = QtWidgets.QAction(Dialog)
+        out = QAction(Dialog)
         out.setObjectName(objname)
         out.setText(text)
         return out
