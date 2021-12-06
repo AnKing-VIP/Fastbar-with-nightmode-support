@@ -150,15 +150,18 @@ def _onBury(self):  # self is browser
     self.mw.requireReset()
 
 
+def sidebar_toggle(self):
+    new_state = False if self.sidebarDockWidget.isVisible() else True
+    self.sidebarDockWidget.setVisible(new_state)
+
+
 def make_and_add_toolbar(self):  # self is browser
     tb = QToolBar("Fastbar")
     tb.setObjectName("Fastbar")
     tb.setIconSize(QSize(15, 15))
     tb.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
 
-    self.form.actionToggle_Sidebar.triggered.connect(
-        lambda: self.sidebarDockWidget.toggleViewAction().trigger()
-    )
+    self.form.actionToggle_Sidebar.triggered.connect(lambda _, b=self: sidebar_toggle(b))
     self.form.actionToggle_Bury.triggered.connect(lambda _, b=self: onBury(b))
     self.form.actionToggle_Fastbar.triggered.connect(
         lambda: tb.toggleViewAction().trigger()
