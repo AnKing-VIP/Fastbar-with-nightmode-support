@@ -9,11 +9,12 @@
 #
 # Copyright: 2017 Luminous Spice <luminous.spice@gmail.com>
 #                  (https://github.com/luminousspice/anki-addons/)
+#            2020+ ijgnd
 #            2020+ The AnKing (https://www.ankingmed.com/) and /u/ijgnord
 #
 #
 # Third party softwares used with Fastbar:
-#     QtAwesome 
+#     QtAwesome (modified for this add-on)
 #         Copyright 2015 The Spyder development team.
 #         Released under the MIT License.
 #         https://github.com/spyder-ide/qtawesome/blob/master/LICENSE
@@ -23,17 +24,30 @@
 #         Released under the MIT License.
 #         https://bitbucket.org/gutworth/six/src/LICENSE
 
+from anki import version as anki_version
+anki_21_version = int(anki_version.split(".")[-1]) 
 
-from aqt.qt import *
-from PyQt5 import QtWidgets, QtCore
+
+from aqt.qt import (
+    QAction,
+    QSize,
+    QToolBar,
+    Qt,
+)
 from aqt import (
     gui_hooks,
     mw,
 )
 from aqt.forms.browser import Ui_Dialog
 from aqt.browser import Browser
+if anki_21_version >= 45:
+    from aqt.utils import ensure_editor_saved, skip_if_selection_is_empty, tooltip
 from anki.sched import Scheduler as schedv1
 from anki.schedv2 import Scheduler as schedv2
+if anki_21_version >=45:
+    from aqt.operations.scheduling import (
+        bury_cards,
+    )
 from anki.utils import ids2str, intTime
 from anki.hooks import addHook, wrap
 
@@ -64,8 +78,6 @@ def check_other_addons():
 gui_hooks.profile_did_open.append(check_other_addons)
 
 
-from anki import version as anki_version
-anki_21_version = int(anki_version.split(".")[-1]) 
 if anki_21_version < 20:
     class Object():
         pass
@@ -123,19 +135,15 @@ QMacToolBar {
 
 
 
-def isBuried(self):  # self is browser
+def isBuried__pre_45(self):  # self is browser
     if mw.col.schedVer() == 1:
         return not not (self.card and self.card.queue == -2)
     if mw.col.schedVer() in [2, 3]:
         return not not (self.card and self.card.queue in [-2, -3])
 
 
-def onBury(self):  # self is browser
-    self.editor.saveNow(lambda b=self: _onBury(b))
-
-
-def _onBury(self):  # self is browser
-    bur = not isBuried(self)
+def _onBury__pre_45(self):  # self is browser
+    bur = not isBuried__pre_45(self)
     c = self.selectedCards()
     if bur:
         self.col.sched.buryCards(c)
@@ -145,15 +153,72 @@ def _onBury(self):  # self is browser
     self.mw.requireReset()
 
 
+def onBury(self):  # self is browser
+    if anki_21_version < 45:
+        self.editor.saveNow(lambda b=self: _onBury__pre_45(b))
+    else:
+        _onBury_45(self)
+
+
+
+
+if anki_21_version >= 45:
+    ## modeled after aqt.operations.scheduling.bury_cards
+    from typing import Sequence
+    from aqt.qt import QWidget
+    from aqt.operations import CollectionOp
+    from anki.cards import CardId
+    from anki.collection import (
+        OpChangesWithCount,
+    )
+    def unbury_cards(
+        *,
+        parent: QWidget,
+        card_ids: Sequence[CardId],
+    ) -> CollectionOp[OpChangesWithCount]:
+        return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
+
+
+    def all_cards_buried(self, cid_list):  # self is browser
+        for c in cid_list:
+            card = self.mw.col.get_card(c)
+            if mw.col.sched_ver() == 1:
+                if not card.queue == -2:
+                    return
+            else:
+                if not card.queue in [-2, -3]:
+                    return
+        return True
+
+
+    @skip_if_selection_is_empty
+    @ensure_editor_saved
+    def _onBury_45(self):  # self is browser
+        c = self.selectedCards()
+        if not all_cards_buried(self, c):
+            bury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip(f"buried {res.count} cards")).run_in_background()
+        else:
+            unbury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip("unburied cards")).run_in_background()
+
+
+
+
+
+
+
+
+def sidebar_toggle(self):
+    new_state = False if self.sidebarDockWidget.isVisible() else True
+    self.sidebarDockWidget.setVisible(new_state)
+
+
 def make_and_add_toolbar(self):  # self is browser
     tb = QToolBar("Fastbar")
     tb.setObjectName("Fastbar")
-    tb.setIconSize(QtCore.QSize(15, 15))
-    tb.setToolButtonStyle(3)
+    tb.setIconSize(QSize(15, 15))
+    tb.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
 
-    self.form.actionToggle_Sidebar.triggered.connect(
-        lambda: self.sidebarDockWidget.toggleViewAction().trigger()
-    )
+    self.form.actionToggle_Sidebar.triggered.connect(lambda _, b=self: sidebar_toggle(b))
     self.form.actionToggle_Bury.triggered.connect(lambda _, b=self: onBury(b))
     self.form.actionToggle_Fastbar.triggered.connect(
         lambda: tb.toggleViewAction().trigger()
@@ -227,7 +292,7 @@ def setupUi(Ui_Dialog_instance, Dialog):
     self = Ui_Dialog_instance
 
     def createQAction(objname, text):
-        out = QtWidgets.QAction(Dialog)
+        out = QAction(Dialog)
         out.setObjectName(objname)
         out.setText(text)
         return out

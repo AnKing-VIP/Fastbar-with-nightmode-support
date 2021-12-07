@@ -21,10 +21,25 @@ import hashlib
 import warnings
 
 # Third party imports
-from PyQt5.QtCore import QObject, QPoint, QRect, qRound, Qt
-from PyQt5.QtGui import (QColor, QFont, QFontDatabase, QIcon, QIconEngine,
-                        QPainter, QPixmap)
-from PyQt5.QtWidgets import QApplication
+#from PyQt5.QtCore import QObject, QPoint, QRect, qRound, Qt
+#from PyQt5.QtGui import (QColor, QFont, QFontDatabase, QIcon, QIconEngine,
+#                        QPainter, QPixmap)
+#from PyQt5.QtWidgets import QApplication
+from aqt.qt import (
+    QObject,
+    QPoint,
+    QRect,
+    qRound,
+    Qt,
+    QColor,
+    QFont,
+    QFontDatabase,
+    QIcon,
+    QIconEngine,
+    QPainter,
+    QPixmap,
+    QApplication,
+)
 from ..six import unichr
 
 
@@ -79,23 +94,23 @@ class CharIconPainter:
         char = options['char']
 
         color_options = {
-            QIcon.On: {
-                QIcon.Normal: (options['color_on'], options['on']),
-                QIcon.Disabled: (options['color_on_disabled'],
+            QIcon.State.On: {
+                QIcon.Mode.Normal: (options['color_on'], options['on']),
+                QIcon.Mode.Disabled: (options['color_on_disabled'],
                                  options['on_disabled']),
-                QIcon.Active: (options['color_on_active'],
+                QIcon.Mode.Active: (options['color_on_active'],
                                options['on_active']),
-                QIcon.Selected: (options['color_on_selected'],
+                QIcon.Mode.Selected: (options['color_on_selected'],
                                  options['on_selected'])
             },
 
-            QIcon.Off: {
-                QIcon.Normal: (options['color_off'], options['off']),
-                QIcon.Disabled: (options['color_off_disabled'],
+            QIcon.State.Off: {
+                QIcon.Mode.Normal: (options['color_off'], options['off']),
+                QIcon.Mode.Disabled: (options['color_off_disabled'],
                                  options['off_disabled']),
-                QIcon.Active: (options['color_off_active'],
+                QIcon.Mode.Active: (options['color_off_active'],
                                options['off_active']),
-                QIcon.Selected: (options['color_off_selected'],
+                QIcon.Mode.Selected: (options['color_off_selected'],
                                  options['off_selected'])
             }
         }
@@ -125,7 +140,7 @@ class CharIconPainter:
 
         painter.setOpacity(options.get('opacity', 1.0))
 
-        painter.drawText(rect, Qt.AlignCenter | Qt.AlignVCenter, char)
+        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter, char)
         painter.restore()
 
 
@@ -149,7 +164,7 @@ class CharIconEngine(QIconEngine):
 
     def pixmap(self, size, mode, state):
         pm = QPixmap(size)
-        pm.fill(Qt.transparent)
+        pm.fill(Qt.GlobalColor.transparent)
         self.paint(QPainter(pm), QRect(QPoint(0, 0), size), mode, state)
         return pm
 
