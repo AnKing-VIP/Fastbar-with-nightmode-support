@@ -46,7 +46,7 @@ from anki.sched import Scheduler as schedv1
 from anki.schedv2 import Scheduler as schedv2
 if anki_21_version >=45:
     from aqt.operations.scheduling import (
-    bury_cards,
+        bury_cards,
     )
 from anki.utils import ids2str, intTime
 from anki.hooks import addHook, wrap
@@ -162,43 +162,43 @@ def onBury(self):  # self is browser
 
 
 
+if anki_21_version >= 45:
+    ## modeled after aqt.operations.scheduling.bury_cards
+    from typing import Sequence
+    from aqt.qt import QWidget
+    from aqt.operations import CollectionOp
+    from anki.cards import CardId
+    from anki.collection import (
+        OpChangesWithCount,
+    )
+    def unbury_cards(
+        *,
+        parent: QWidget,
+        card_ids: Sequence[CardId],
+    ) -> CollectionOp[OpChangesWithCount]:
+        return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
 
-## modeled after aqt.operations.scheduling.bury_cards
-from typing import Sequence
-from aqt.qt import QWidget
-from aqt.operations import CollectionOp
-from anki.cards import CardId
-from anki.collection import (
-    OpChangesWithCount,
-)
-def unbury_cards(
-    *,
-    parent: QWidget,
-    card_ids: Sequence[CardId],
-) -> CollectionOp[OpChangesWithCount]:
-    return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
+
+    def all_cards_buried(self, cid_list):  # self is browser
+        for c in cid_list:
+            card = self.mw.col.get_card(c)
+            if mw.col.sched_ver() == 1:
+                if not card.queue == -2:
+                    return
+            else:
+                if not card.queue in [-2, -3]:
+                    return
+        return True
 
 
-def all_cards_buried(self, cid_list):  # self is browser
-    for c in cid_list:
-        card = self.mw.col.get_card(c)
-        if mw.col.sched_ver() == 1:
-            if not card.queue == -2:
-                return
+    @skip_if_selection_is_empty
+    @ensure_editor_saved
+    def _onBury_45(self):  # self is browser
+        c = self.selectedCards()
+        if not all_cards_buried(self, c):
+            bury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip(f"buried {res.count} cards")).run_in_background()
         else:
-            if not card.queue in [-2, -3]:
-                return
-    return True
-
-
-@skip_if_selection_is_empty
-@ensure_editor_saved
-def _onBury_45(self):  # self is browser
-    c = self.selectedCards()
-    if not all_cards_buried(self, c):
-        bury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip(f"buried {res.count} cards")).run_in_background()
-    else:
-        unbury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip("unburied cards")).run_in_background()
+            unbury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip("unburied cards")).run_in_background()
 
 
 
