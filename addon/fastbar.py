@@ -64,6 +64,10 @@ if anki_21_version >=45:
     from aqt.operations.scheduling import (
         bury_cards,
     )
+if anki_21_version >=50:
+    from aqt.operations.scheduling import (
+        unbury_cards,
+    )
 from anki.utils import ids2str, intTime
 from anki.hooks import addHook, wrap
 
@@ -179,20 +183,24 @@ def onBury(self):  # self is browser
 
 
 if anki_21_version >= 45:
-    ## modeled after aqt.operations.scheduling.bury_cards
-    from typing import Sequence
-    from aqt.qt import QWidget
-    from aqt.operations import CollectionOp
-    from anki.cards import CardId
-    from anki.collection import (
-        OpChangesWithCount,
-    )
-    def unbury_cards(
-        *,
-        parent: QWidget,
-        card_ids: Sequence[CardId],
-    ) -> CollectionOp[OpChangesWithCount]:
-        return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
+    # in 2.1.50 beta2 Anki added a new unbury function, see cad0c64
+    # see https://github.com/ankitects/anki/commit/cad0c64105b5b41cbcba405a1dea7327de75a45a
+    # so for versions 45-49 I have to build it myself.
+    if anki_21_version < 50:
+        ## modeled after aqt.operations.scheduling.bury_cards
+        from typing import Sequence
+        from aqt.qt import QWidget
+        from aqt.operations import CollectionOp
+        from anki.cards import CardId
+        from anki.collection import (
+            OpChangesWithCount,
+        )
+        def unbury_cards(
+            *,
+            parent: QWidget,
+            card_ids: Sequence[CardId],
+        ) -> CollectionOp[OpChangesWithCount]:
+            return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
 
 
     def all_cards_buried(self, cid_list):  # self is browser
