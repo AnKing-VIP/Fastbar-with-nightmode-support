@@ -50,10 +50,9 @@ from aqt.qt import (
     QToolBar,
     Qt,
 )
-from aqt import (
-    gui_hooks,
-    mw,
-)
+from aqt import mw
+if anki_21_version > 22:
+    from aqt import gui_hooks
 from aqt.forms.browser import Ui_Dialog
 from aqt.browser import Browser
 if anki_21_version >= 45:
@@ -95,7 +94,10 @@ def check_other_addons():
     global ExtendedTagAddon
     BetterSearchAddon = maybe_import_other_addon("1052724801")  # BetterSearch
     ExtendedTagAddon = maybe_import_other_addon("1135507717")  # Extended Tag Add/Edit Dialog
-gui_hooks.profile_did_open.append(check_other_addons)
+if anki_21_version >= 24:
+    gui_hooks.profile_did_open.append(check_other_addons)
+else:
+    addHook('profileLoaded', check_other_addons)
 
 
 if anki_21_version < 20:
@@ -309,7 +311,10 @@ def make_and_add_toolbar(self):  # self is browser
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
-gui_hooks.browser_will_show.append(make_and_add_toolbar)
+if anki_21_version >= 24:
+    gui_hooks.browser_will_show.append(make_and_add_toolbar)
+else:
+    addHook("browser.setupMenus", make_and_add_toolbar)
 
 
 def setupUi(Ui_Dialog_instance, Dialog):
