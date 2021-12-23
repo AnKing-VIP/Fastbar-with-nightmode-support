@@ -50,15 +50,17 @@ from aqt.qt import (
     QToolBar,
     Qt,
 )
+
 from aqt import mw
 if anki_21_version > 22:
     from aqt import gui_hooks
+
 from aqt.forms.browser import Ui_Dialog
 from aqt.browser import Browser
+
 if anki_21_version >= 45:
     from aqt.utils import ensure_editor_saved, skip_if_selection_is_empty, tooltip
-from anki.sched import Scheduler as schedv1
-from anki.schedv2 import Scheduler as schedv2
+
 if anki_21_version >=45:
     from aqt.operations.scheduling import (
         bury_cards,
@@ -67,8 +69,9 @@ if anki_21_version >=50:
     from aqt.operations.scheduling import (
         unbury_cards,
     )
-from anki.utils import ids2str, intTime
+from anki.utils import ids2str
 from anki.hooks import addHook, wrap
+
 
 from . import qtawesome as qta
 
