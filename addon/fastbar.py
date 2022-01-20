@@ -24,8 +24,24 @@
 #         Released under the MIT License.
 #         https://bitbucket.org/gutworth/six/src/LICENSE
 
-from anki import version as anki_version
-anki_21_version = int(anki_version.split(".")[-1]) 
+
+def get_anki_version():
+    try:
+        # 2.1.50+ because of bdd5b27715bb11e4169becee661af2cb3d91a443, https://github.com/ankitects/anki/pull/1451
+        from anki.utils import point_version
+    except:
+        try:
+            # introduced with 66714260a3c91c9d955affdc86f10910d330b9dd in 2020-01-19, should be in 2.1.20+
+            from anki.utils import pointVersion
+        except:
+            # <= 2.1.19
+            from anki import version as anki_version
+            return int(anki_version.split(".")[-1]) 
+        else:
+            return pointVersion()
+    else:
+        return point_version()
+anki_21_version = get_anki_version()
 
 
 from aqt.qt import (
@@ -34,22 +50,28 @@ from aqt.qt import (
     QToolBar,
     Qt,
 )
-from aqt import (
-    gui_hooks,
-    mw,
-)
+
+from aqt import mw
+if anki_21_version > 22:
+    from aqt import gui_hooks
+
 from aqt.forms.browser import Ui_Dialog
 from aqt.browser import Browser
+
 if anki_21_version >= 45:
     from aqt.utils import ensure_editor_saved, skip_if_selection_is_empty, tooltip
-from anki.sched import Scheduler as schedv1
-from anki.schedv2 import Scheduler as schedv2
+
 if anki_21_version >=45:
     from aqt.operations.scheduling import (
         bury_cards,
     )
-from anki.utils import ids2str, intTime
+if anki_21_version >=50:
+    from aqt.operations.scheduling import (
+        unbury_cards,
+    )
+from anki.utils import ids2str
 from anki.hooks import addHook, wrap
+
 
 from . import qtawesome as qta
 
@@ -75,7 +97,10 @@ def check_other_addons():
     global ExtendedTagAddon
     BetterSearchAddon = maybe_import_other_addon("1052724801")  # BetterSearch
     ExtendedTagAddon = maybe_import_other_addon("1135507717")  # Extended Tag Add/Edit Dialog
-gui_hooks.profile_did_open.append(check_other_addons)
+if anki_21_version >= 24:
+    gui_hooks.profile_did_open.append(check_other_addons)
+else:
+    addHook('profileLoaded', check_other_addons)
 
 
 if anki_21_version < 20:
@@ -163,20 +188,24 @@ def onBury(self):  # self is browser
 
 
 if anki_21_version >= 45:
-    ## modeled after aqt.operations.scheduling.bury_cards
-    from typing import Sequence
-    from aqt.qt import QWidget
-    from aqt.operations import CollectionOp
-    from anki.cards import CardId
-    from anki.collection import (
-        OpChangesWithCount,
-    )
-    def unbury_cards(
-        *,
-        parent: QWidget,
-        card_ids: Sequence[CardId],
-    ) -> CollectionOp[OpChangesWithCount]:
-        return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
+    # in 2.1.50 beta2 Anki added a new unbury function, see cad0c64
+    # see https://github.com/ankitects/anki/commit/cad0c64105b5b41cbcba405a1dea7327de75a45a
+    # so for versions 45-49 I have to build it myself.
+    if anki_21_version < 50:
+        ## modeled after aqt.operations.scheduling.bury_cards
+        from typing import Sequence
+        from aqt.qt import QWidget
+        from aqt.operations import CollectionOp
+        from anki.cards import CardId
+        from anki.collection import (
+            OpChangesWithCount,
+        )
+        def unbury_cards(
+            *,
+            parent: QWidget,
+            card_ids: Sequence[CardId],
+        ) -> CollectionOp[OpChangesWithCount]:
+            return CollectionOp(parent, lambda col: col.sched.unbury_cards(card_ids))
 
 
     def all_cards_buried(self, cid_list):  # self is browser
@@ -285,7 +314,10 @@ def make_and_add_toolbar(self):  # self is browser
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
-gui_hooks.browser_will_show.append(make_and_add_toolbar)
+if anki_21_version >= 24:
+    gui_hooks.browser_will_show.append(make_and_add_toolbar)
+else:
+    addHook("browser.setupMenus", make_and_add_toolbar)
 
 
 def setupUi(Ui_Dialog_instance, Dialog):
