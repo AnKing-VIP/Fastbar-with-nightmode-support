@@ -43,6 +43,7 @@ anki_21_version = get_anki_version()
 
 from aqt.qt import (
     QAction,
+    QMenu,
     QSize,
     QToolBar,
     Qt,
@@ -317,22 +318,34 @@ else:
     addHook("browser.setupMenus", make_and_add_toolbar)
 
 
-def setupUi(Ui_Dialog_instance, Dialog):
-    self = Ui_Dialog_instance
+# taken from https://github.com/AnKingMed/Study-Timer/commit/c3d89949c6523fd4f51121e2dc2ff0fffab5f202
+def getMenu(parent, menuName):
+    menubar = parent.form.menubar
+    for a in menubar.actions():
+        if menuName == a.text():
+            return a.parent()
+    else:
+        return menubar.addMenu(menuName)
 
+
+def onSetupMenus(self):
     def createQAction(objname, text):
-        out = QAction(Dialog)
+        out = QAction(self)
         out.setObjectName(objname)
         out.setText(text)
         return out
 
-    self.actionToggle_Sidebar = createQAction("toggleSidebar", "Toggle Sidebar")
-    self.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
-    self.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
+    self.form.actionToggle_Sidebar = createQAction("toggleSidebar", "Toggle Sidebar")
+    self.form.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
+    self.form.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
 
-    self.menuJump.addSeparator()
-    self.menuJump.addAction(self.actionToggle_Sidebar)
-    self.menuJump.addAction(self.actionToggle_Fastbar)
-    self.menu_Cards.addSeparator()
-    self.menu_Cards.addAction(self.actionToggle_Bury)
-Ui_Dialog.setupUi = wrap(Ui_Dialog.setupUi, setupUi)
+    self.form.menu_Cards.addSeparator()
+    self.form.menu_Cards.addAction(self.form.actionToggle_Bury)
+    
+    menu_view = getMenu(self, "&View")
+    if not hasattr(self, "menuView"):
+        self.menuView = menu_view
+    menu_view.addSeparator()
+    menu_view.addAction(self.form.actionToggle_Sidebar)
+    menu_view.addAction(self.form.actionToggle_Fastbar)
+addHook("browser.setupMenus", onSetupMenus)
