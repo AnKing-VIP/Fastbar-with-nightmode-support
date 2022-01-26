@@ -16,11 +16,34 @@ Font-Awesome and other iconic fonts for PyQt / PySide applications.
    set_defaults
 """
 
-from .iconic_font import IconicFont, set_global_defaults
-from .animation import Pulse, Spin
-from ._version import version_info, __version__
+# Third party imports
+# from qtpy import QtCore, QtWidgets, QtGui
+from aqt.qt import *
 
+# Local imports
+from ._version import __version__, version_info
+from .animation import Pulse, Spin
+from .iconic_font import IconicFont, set_global_defaults
+# from .styles import dark, light
+
+# Constants
 _resource = { 'iconic': None }
+
+
+def has_valid_font_ids(inst):
+    """Validate instance's font ids are loaded to QFontDatabase.
+
+    It is possible that QFontDatabase was reset or QApplication was recreated
+    in both cases it is possible that font is not available.
+    """
+    # Check stored font ids are still available
+    for font_id in inst.fontids.values():
+        font_families = QFontDatabase.applicationFontFamilies(
+            font_id
+        )
+        if not font_families:
+            return False
+    return True
 
 
 def _instance():
@@ -30,21 +53,51 @@ def _instance():
     Functions ``icon``, ``load_font``, ``charmap``, ``font`` and
     ``set_defaults`` all rebind to methods of the singleton instance of IconicFont.
     """
+    if (
+        _resource['iconic'] is not None
+        and not has_valid_font_ids(_resource['iconic'])
+    ):
+        # Reset cached instance
+        _resource['iconic'] = None
+
     if _resource['iconic'] is None:
         _resource['iconic'] = IconicFont(
-            ('fa', 'fontawesome-webfont.ttf', 'fontawesome-webfont-charmap.json'),
-            ('ei', 'elusiveicons-webfont.ttf', 'elusiveicons-webfont-charmap.json')
+            ('fa',
+             'fontawesome4.7-webfont.ttf',
+             'fontawesome4.7-webfont-charmap.json'),
+            # ('fa5',
+            #  'fontawesome5-regular-webfont.ttf',
+            #  'fontawesome5-regular-webfont-charmap.json'),
+            # ('fa5s',
+            #  'fontawesome5-solid-webfont.ttf',
+            #  'fontawesome5-solid-webfont-charmap.json'),
+            # ('fa5b',
+            #  'fontawesome5-brands-webfont.ttf',
+            #  'fontawesome5-brands-webfont-charmap.json'),
+            ('ei', 'elusiveicons-webfont.ttf', 'elusiveicons-webfont-charmap.json'),
+            # ('mdi', 'materialdesignicons5-webfont.ttf',
+            #  'materialdesignicons5-webfont-charmap.json'),
+            # ('mdi6', 'materialdesignicons6-webfont.ttf',
+            #  'materialdesignicons6-webfont-charmap.json'),
+            # ('ph', 'phosphor.ttf', 'phosphor-charmap.json'),
+            # ('ri', 'remixicon.ttf', 'remixicon-charmap.json'),
+            # ('msc', 'codicon.ttf', 'codicon-charmap.json'),
         )
     return _resource['iconic']
+
+
+def reset_cache():
+    if _resource['iconic'] is not None:
+        _resource['iconic'].icon_cache = {}
 
 
 def icon(*names, **kwargs):
     """
     Return a QIcon object corresponding to the provided icon name(s).
 
-    This function is the main interface of qtawesome. 
+    This function is the main interface of qtawesome.
 
-    It can be used to create a QIcon instance from a single glyph 
+    It can be used to create a QIcon instance from a single glyph
     or from a list of glyphs that are displayed on the top of each other.
     Such icon stacks are generally used to combine multiple glyphs to make
     more complex icons.
@@ -53,22 +106,33 @@ def icon(*names, **kwargs):
     The ``prefix`` corresponds to the font to be used and ``name`` is the
     name of the icon.
 
-     - The prefix corresponding to Font-Awesome is 'fa'
+     - The prefix corresponding to Font-Awesome 4.x is 'fa'
+     - The prefix corresponding to Font-Awesome 5.x (regular) is 'fa5'
+     - The prefix corresponding to Font-Awesome 5.x (solid) is 'fa5s'
+     - The prefix corresponding to Font-Awesome 5.x (brands) is 'fa5b'
      - The prefix corresponding to Elusive-Icons is 'ei'
+     - The prefix corresponding to Material-Design-Icons 5.x is 'mdi'
+     - The prefix corresponding to Material-Design-Icons 6.x is 'mdi6'
+     - The prefix corresponding to Phosphor is 'ph'
+     - The prefix corresponding to Remix-Icon is 'ri'
+     - The prefix corresponding to Microsoft's Codicons is 'msc'
 
     When requesting a single glyph, options (such as color or positional offsets)
     can be passed as keyword arguments::
 
         import qtawesome as qta
 
-        music_icon = qta.icon('fa.music', color='blue', color_active='orange')
+        music_icon = qta.icon(
+            'fa5s.music',
+            color='blue',
+            color_active='orange')
 
-    When requesting multiple glyphs, the `options` keyword argument contains the
-    list of option dictionaries to be used for each glyph::
+    When requesting multiple glyphs, the `options` keyword argument contains
+    the list of option dictionaries to be used for each glyph::
 
-        camera_ban = qta.icon('fa.camera', 'fa.ban', options=[{
+        camera_ban = qta.icon('fa5s.camera', 'fa5s.ban', options=[{
                 'scale_factor': 0.5,
-                'active': 'fa.legal'
+                'active': 'fa5s.balance-scale'
             }, {
                 'color': 'red',
                 'opacity': 0.7
@@ -84,7 +148,7 @@ def icon(*names, **kwargs):
           The user is interacting with the icon, for example, moving the mouse
           over it or clicking it.
         - ``Selected``: The item represented by the icon is selected.
- 
+
     The glyph for the Normal mode is the one specified with the main positional
     argument.
 
@@ -95,7 +159,7 @@ def icon(*names, **kwargs):
      - ``offset``: tuple (x, y) corresponding to the horizontal and vertical
        offsets for the glyph, specified as a proportion of the icon size.
      - ``animation``: animation object for the icon.
-     - ``scale_factor``: multiplicative scale factor to be used for the glyph. 
+     - ``scale_factor``: multiplicative scale factor to be used for the glyph.
 
     The following options apply to the different modes of the icon
 
@@ -176,7 +240,7 @@ def font(prefix, size):
         import qtawesome as qta
         from qtpy import QtWidgets
 
-        label = QtWidgets.QLabel(unichr(0xf19c) + ' ' + 'Label')
+        label = QLabel(unichr(0xf19c) + ' ' + 'Label')
         label.setFont(qta.font('fa', 16))
 
     Parameters
@@ -202,3 +266,50 @@ def set_defaults(**kwargs):
     """
     return set_global_defaults(**kwargs)
 
+
+class IconWidget(QLabel):
+    """
+    IconWidget gives the ability to display an icon as a widget
+
+    if supports the same arguments as icon()
+    for example
+    music_icon = qta.IconWidget('fa5s.music',
+                                color='blue',
+                                color_active='orange')
+
+    it also have setIcon() and setIconSize() functions
+    """
+
+    def __init__(self, *names, **kwargs):
+        super().__init__(parent=kwargs.get('parent'))
+        self._icon = None
+        self._size = QSize(16, 16)
+        self.setIcon(icon(*names, **kwargs))
+
+    def setIcon(self, _icon):
+        """
+        set a new icon()
+
+        Parameters
+        ----------
+        _icon: qtawesome.icon
+            icon to set
+        """
+        self._icon = _icon
+        self.setPixmap(_icon.pixmap(self._size))
+
+    def setIconSize(self, size):
+        """
+        set icon size
+
+        Parameters
+        ----------
+        size: QSize
+            size of the icon
+        """
+        self._size = size
+
+    def update(self, *args, **kwargs):
+        if self._icon:
+            self.setPixmap(self._icon.pixmap(self._size))
+        return super().update(*args, **kwargs)
