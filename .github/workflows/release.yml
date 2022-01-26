@@ -15,7 +15,7 @@ jobs:
       # Path of files to put inside addon root when creating addon file. Whitespace separated.
       BUNDLE_FILES: README.md
       # Path of addon root in repo.
-      ADDON_ROOT: addon
+      ADDON_ROOT: src
       ADDON_FILE_NAME: fastbar_v${{ github.event.inputs.version }}.ankiaddon
 
     steps:
