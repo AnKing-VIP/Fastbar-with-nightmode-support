@@ -50,7 +50,7 @@ from aqt.qt import (
 )
 
 from aqt import mw
-if anki_21_version > 22:
+if anki_21_version >= 24:
     from aqt import gui_hooks
 
 from aqt.forms.browser import Ui_Dialog
