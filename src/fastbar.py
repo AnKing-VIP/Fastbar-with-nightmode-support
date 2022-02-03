@@ -312,10 +312,6 @@ def make_and_add_toolbar(self):  # self is browser
     else:
         tb.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
-if anki_21_version >= 24:
-    gui_hooks.browser_will_show.append(make_and_add_toolbar)
-else:
-    addHook("browser.setupMenus", make_and_add_toolbar)
 
 
 # taken from https://github.com/AnKingMed/Study-Timer/commit/c3d89949c6523fd4f51121e2dc2ff0fffab5f202
@@ -348,4 +344,13 @@ def onSetupMenus(self):
     menu_view.addSeparator()
     menu_view.addAction(self.form.actionToggle_Sidebar)
     menu_view.addAction(self.form.actionToggle_Fastbar)
-addHook("browser.setupMenus", onSetupMenus)
+
+
+if anki_21_version >= 24:
+    gui_hooks.browser_menus_did_init.append(onSetupMenus)
+    gui_hooks.browser_will_show.append(make_and_add_toolbar)
+else:
+    def old_browser_setup_helper(self):
+        onSetupMenus(self)
+        make_and_add_toolbar(self)
+    addHook("browser.setupMenus", old_browser_setup_helper)
