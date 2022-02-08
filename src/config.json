@@ -1,4 +1,5 @@
 {
+    "do not show by default": false,
     "switch to dark theme when add-on night mode is enabled": true,
     "enable compact mode": false
-  }
+}

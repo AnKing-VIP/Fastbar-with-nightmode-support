@@ -315,6 +315,8 @@ def make_and_add_toolbar(self):  # self is browser
         fbar.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(fbar)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
     self.fbar = fbar
+    if gc("do not show by default"):
+        self.fbar.setVisible(False)
 
 
 # taken from https://github.com/AnKingMed/Study-Timer/commit/c3d89949c6523fd4f51121e2dc2ff0fffab5f202
