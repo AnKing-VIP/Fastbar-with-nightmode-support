@@ -239,6 +239,10 @@ def sidebar_toggle(self):
     self.sidebarDockWidget.setVisible(new_state)
 
 
+def fastbar_toggle(self):
+    self.fbar.toggleViewAction().trigger()
+
+
 def make_and_add_toolbar(self):  # self is browser
     fbar = QToolBar("Fastbar")
     fbar.setObjectName("Fastbar")
@@ -247,9 +251,7 @@ def make_and_add_toolbar(self):  # self is browser
 
     self.form.actionToggle_Sidebar.triggered.connect(lambda _, b=self: sidebar_toggle(b))
     self.form.actionToggle_Bury.triggered.connect(lambda _, b=self: onBury(b))
-    self.form.actionToggle_Fastbar.triggered.connect(
-        lambda: fbar.toggleViewAction().trigger()
-    )
+    self.form.actionToggle_Fastbar.triggered.connect(lambda _,b=self: fastbar_toggle(b))
 
     self.form.actionDelete.setText("Delete Note")
 
@@ -312,6 +314,7 @@ def make_and_add_toolbar(self):  # self is browser
     else:
         fbar.setStyleSheet("QToolBar{spacing:0px;}")
     self.addToolBar(fbar)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
+    self.fbar = fbar
 
 
 # taken from https://github.com/AnKingMed/Study-Timer/commit/c3d89949c6523fd4f51121e2dc2ff0fffab5f202
