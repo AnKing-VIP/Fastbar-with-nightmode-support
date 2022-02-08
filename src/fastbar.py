@@ -240,15 +240,15 @@ def sidebar_toggle(self):
 
 
 def make_and_add_toolbar(self):  # self is browser
-    tb = QToolBar("Fastbar")
-    tb.setObjectName("Fastbar")
-    tb.setIconSize(QSize(15, 15))
-    tb.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+    fbar = QToolBar("Fastbar")
+    fbar.setObjectName("Fastbar")
+    fbar.setIconSize(QSize(15, 15))
+    fbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
 
     self.form.actionToggle_Sidebar.triggered.connect(lambda _, b=self: sidebar_toggle(b))
     self.form.actionToggle_Bury.triggered.connect(lambda _, b=self: onBury(b))
     self.form.actionToggle_Fastbar.triggered.connect(
-        lambda: tb.toggleViewAction().trigger()
+        lambda: fbar.toggleViewAction().trigger()
     )
 
     self.form.actionDelete.setText("Delete Note")
@@ -303,15 +303,15 @@ def make_and_add_toolbar(self):  # self is browser
             action.setText(word_wrapped_text)
         icon = qta.icon(icon_name, color="white" if night_mode_on or theme_manager.night_mode else "black")  
         action.setIcon(icon)
-        tb.addAction(action)
+        fbar.addAction(action)
         # if idx != len(all_actions)-1:  # python uses zero-based indexing
         #     tb.addSeparator()
 
     if night_mode_on:
-        tb.setStyleSheet(night_mode_stylesheet)
+        fbar.setStyleSheet(night_mode_stylesheet)
     else:
-        tb.setStyleSheet("QToolBar{spacing:0px;}")
-    self.addToolBar(tb)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
+        fbar.setStyleSheet("QToolBar{spacing:0px;}")
+    self.addToolBar(fbar)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
 
 
 # taken from https://github.com/AnKingMed/Study-Timer/commit/c3d89949c6523fd4f51121e2dc2ff0fffab5f202
