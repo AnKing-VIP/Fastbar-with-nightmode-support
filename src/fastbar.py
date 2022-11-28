@@ -124,6 +124,7 @@ QToolBar {
     background: #272828!important;
     spacing: 0px;
     color:  #272828!important;
+    border: 0px;
 }
 QToolBar::separator{
     border: 0px solid #272828!important;
@@ -312,7 +313,8 @@ def make_and_add_toolbar(self):  # self is browser
     if night_mode_on:
         fbar.setStyleSheet(night_mode_stylesheet)
     else:
-        fbar.setStyleSheet("QToolBar{spacing:0px;}")
+        # border: 0px; is needed for correct background color in MacOS
+        fbar.setStyleSheet("QToolBar{spacing:0px; border: 0px;}")
     self.addToolBar(fbar)  # addToolBar is a method of QMainWindow (that the Browser inherits from)
     self.fbar = fbar
     if gc("do not show by default"):
