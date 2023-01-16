@@ -257,6 +257,26 @@ def make_and_add_toolbar(self):  # self is browser
     self.form.actionDelete.setText("Delete Note")
 
     all_actions = gc("sidebar_actions")
+    if not all_actions:  # if no user config provided use the default
+        all_actions = [
+            ["actionToggle_Fastbar", "ei.remove-sign"],
+            ["actionToggle_Sidebar", "fa.exchange"],
+            ["actionAdd", "fa.plus-square"],
+            ["action_Info", "fa.info-circle"],
+            ["actionToggle_Mark", "fa.star"],
+            ["actionToggle_Suspend", "fa.pause-circle"],
+            ["actionToggle_Bury", "fa.step-backward"],
+            ["actionChange_Deck", "fa.inbox"],
+            ["actionChangeModel", "fa.leanpub"],
+            ["actionAdd_Tags", "fa.tag"],
+            ["actionRemove_Tags", "fa.eraser"],
+            ["actionClear_Unused_Tags", "fa.magic"],
+            ["actionDelete", "fa.trash-o"],
+            ["addon_extended_tag", "fa.tags"],
+            ["addon_bettersearch", "fa.search-plus"],
+            ["action_reschedule_set_due_date", "fa.history"],
+            ["actionReposition", "fa.sign-in"],
+        ]
     # maybe remove add-on actions and set commands used according to your anki verison
     for idx, act_list in enumerate(all_actions):
         if act_list[0] == "action_reschedule_set_due_date":
