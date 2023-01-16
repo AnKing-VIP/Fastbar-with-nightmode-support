@@ -256,32 +256,17 @@ def make_and_add_toolbar(self):  # self is browser
 
     self.form.actionDelete.setText("Delete Note")
 
-
-    all_actions = [
-        ["actionToggle_Fastbar", "ei.remove-sign"],       #  0
-        ["actionToggle_Sidebar", "fa.exchange"],          #  1
-        ["actionAdd", "fa.plus-square"],                  #  2
-        ["action_Info", "fa.info-circle"],                #  3
-        ["actionToggle_Mark", "fa.star"],                 #  4
-        ["actionToggle_Suspend", "fa.pause-circle"],      #  5
-        ["actionToggle_Bury", "fa.step-backward"],        #  6
-        ["actionChange_Deck", "fa.inbox"],                #  7
-        ["actionChangeModel", "fa.leanpub"],              #  8
-        ["actionAdd_Tags", "fa.tag"],                     #  9
-        ["actionRemove_Tags", "fa.eraser"],               # 10
-        ["actionClear_Unused_Tags", "fa.magic"],          # 11
-        ["actionDelete", "fa.trash-o"],                   # 12
-        ["actionReschedule" if anki_21_version < 41 else "action_set_due_date", "fa.history"],
-        ["actionReposition", "fa.sign-in"],
-    ]
-    ExTaDiNo = gc("button for Extended Tag Edit Addon", 12)
-    if ExtendedTagAddon and ExTaDiNo:
-        if hasattr(self, "ExTaDiAction"):
-            all_actions.insert(ExTaDiNo, [self.ExTaDiAction, "fa.tags"])
-    BeSeNo = gc("button for BetterSearch", 13)
-    if BetterSearchAddon and BeSeNo:
-        if hasattr(self, "BeSeAction"):
-            all_actions.insert(BeSeNo, [self.BeSeAction, "fa.search-plus"])
+    all_actions = gc("sidebar_actions")
+    # maybe remove add-on actions and set commands used according to your anki verison
+    for idx, act_list in enumerate(all_actions):
+        if act_list[0] == "action_reschedule_set_due_date":
+            all_actions[idx] = ["actionReschedule" if anki_21_version < 41 else "action_set_due_date", act_list[1]]
+        if act_list[0] == "addon_extended_tag":
+            if hasattr(self, "ExTaDiAction"):
+                all_actions[idx] = [self.ExTaDiAction, act_list[1]]
+        if act_list[0] == "addon_bettersearch":
+            if hasattr(self, "BeSeAction"):
+                all_actions[idx] = [self.BeSeAction, act_list[1]]
 
     for idx, val in enumerate(all_actions):
         action_name, icon_name = val
