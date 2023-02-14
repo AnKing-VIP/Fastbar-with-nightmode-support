@@ -180,9 +180,10 @@ def _onBury__pre_45(self):  # self is browser
 def onBury(self):  # self is browser
     if anki_21_version < 45:
         self.editor.saveNow(lambda b=self: _onBury__pre_45(b))
-    else:
+    elif anki_21_version < 58:
         _onBury_45(self)
-
+    else:
+        _onBury_58(self)
 
 
 
@@ -222,14 +223,21 @@ if anki_21_version >= 45:
     @skip_if_selection_is_empty
     @ensure_editor_saved
     def _onBury_45(self):  # self is browser
-        c = self.selectedCards()
+        c = self.selected_cards()
         if not all_cards_buried(self, c):
             bury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip(f"buried {res.count} cards")).run_in_background()
         else:
             unbury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip("unburied cards")).run_in_background()
 
 
-
+if anki_21_version >= 58:
+    # this uses thew newly introduced method bury_selected_cards from commit 77bba53 from 2023-01-30
+    def _onBury_58(self):  # self is browser
+        c = self.selected_cards()
+        if not all_cards_buried(self, c):
+            self.bury_selected_cards(True)
+        else:
+            self.bury_selected_cards(False)
 
 
 
@@ -347,8 +355,9 @@ def onSetupMenus(self):
     self.form.actionToggle_Bury = createQAction("toggleBury", "Toggle Bury")
     self.form.actionToggle_Fastbar = createQAction("toggleFastbar", "Toggle Fastbar")
 
-    self.form.menu_Cards.addSeparator()
-    self.form.menu_Cards.addAction(self.form.actionToggle_Bury)
+    if anki_21_version < 58:
+        self.form.menu_Cards.addSeparator()
+        self.form.menu_Cards.addAction(self.form.actionToggle_Bury)
     
     menu_view = getMenu(self, "&View")
     if not hasattr(self, "menuView"):
