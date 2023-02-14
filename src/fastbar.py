@@ -222,7 +222,7 @@ if anki_21_version >= 45:
     @skip_if_selection_is_empty
     @ensure_editor_saved
     def _onBury_45(self):  # self is browser
-        c = self.selectedCards()
+        c = self.selected_cards()
         if not all_cards_buried(self, c):
             bury_cards(parent=self.mw, card_ids=c,).success(lambda res: tooltip(f"buried {res.count} cards")).run_in_background()
         else:
