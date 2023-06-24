@@ -108,23 +108,23 @@ class CharIconPainter:
         char = options['char']
 
         color_options = {
-            QIcon.On: {
-                QIcon.Normal: (options['color_on'], options['on']),
-                QIcon.Disabled: (options['color_on_disabled'],
+            QIcon.State.On: {
+                QIcon.Mode.Normal: (options['color_on'], options['on']),
+                QIcon.Mode.Disabled: (options['color_on_disabled'],
                                  options['on_disabled']),
-                QIcon.Active: (options['color_on_active'],
+                QIcon.Mode.Active: (options['color_on_active'],
                                options['on_active']),
-                QIcon.Selected: (options['color_on_selected'],
+                QIcon.Mode.Selected: (options['color_on_selected'],
                                  options['on_selected'])
             },
 
-            QIcon.Off: {
-                QIcon.Normal: (options['color_off'], options['off']),
-                QIcon.Disabled: (options['color_off_disabled'],
+            QIcon.State.Off: {
+                QIcon.Mode.Normal: (options['color_off'], options['off']),
+                QIcon.Mode.Disabled: (options['color_off_disabled'],
                                  options['off_disabled']),
-                QIcon.Active: (options['color_off_active'],
+                QIcon.Mode.Active: (options['color_off_active'],
                                options['off_active']),
-                QIcon.Selected: (options['color_off_selected'],
+                QIcon.Mode.Selected: (options['color_off_selected'],
                                  options['off_selected'])
             }
         }
