@@ -305,6 +305,9 @@ def make_and_add_toolbar(self):  # self is browser
             action = action_name
 
         if action is None:
+            if hasattr(self, action_name):
+                action = getattr(self, action_name, None)
+        if action is None:
             continue
         if gc("enable compact mode"):
             # TODO: Create custom QToolBar widget to handle word-wrapping
