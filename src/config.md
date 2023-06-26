@@ -8,10 +8,10 @@ the setting `"sidebar_actions"` is a list of lists - each list contains two entr
 
 ---
 
-<center><div style="vertical-align:middle;"><a href="https://www.ankingmed.com"><img src="../../addons21/46611790/AnKing/AnKingSmall.png"></a><a href="https://www.ankingmed.com"><img src="../../addons21/46611790/AnKing/TheAnKing.png"></a></div></center>
+<center><div style="vertical-align:middle;"><a href="https://www.ankingmed.com"><img src="/_addons/46611790/AnKing/AnKingSmall.png"></a><a href="https://www.ankingmed.com"><img src="/_addons/46611790/AnKing/TheAnKing.png"></a></div></center>
 
-<center><a href="https://www.facebook.com/ankingmed"><img src="../../addons21/46611790/AnKing/Facebook.jpg"></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.instagram.com/ankingmed"><img src="../../addons21/46611790/AnKing/Instagram.jpg"></a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.youtube.com/theanking"><img src="../../addons21/46611790/AnKing/YouTube.jpg"></a></center>
+<center><a href="https://www.facebook.com/ankingmed"><img src="/_addons/46611790/AnKing/Facebook.jpg"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.instagram.com/ankingmed"><img src="/_addons/46611790/AnKing/Instagram.jpg"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.youtube.com/theanking"><img src="/_addons/46611790/AnKing/YouTube.jpg"></a></center>
 
-<center><a href="https://www.patreon.com/ankingmed"><img src="../../addons21/46611790/AnKing/Patreon.jpg"></a></center>
+<center><a href="https://www.patreon.com/ankingmed"><img src="/_addons/46611790/AnKing/Patreon.jpg"></a></center>
